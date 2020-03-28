@@ -1,7 +1,7 @@
 package com.jliermann.utils.test
 
-import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.{FlatSpec, Matchers}
 
 trait PropTest
   extends FlatSpec

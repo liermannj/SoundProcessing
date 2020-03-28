@@ -1,5 +1,5 @@
+import sbt.Keys._
 import sbt._
-import Keys._
 
 val AkkaStreamVersion = "2.6.3"
 val PureConfigVersion = "0.12.3"

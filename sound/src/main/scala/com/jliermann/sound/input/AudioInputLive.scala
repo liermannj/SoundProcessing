@@ -1,40 +1,31 @@
 package com.jliermann.sound.input
 import akka.stream.IOResult
-import akka.stream.scaladsl.Source
-import javax.sound.sampled.{AudioFormat, AudioInputStream, AudioSystem, TargetDataLine}
-import akka.stream.scaladsl.StreamConverters
+import akka.stream.scaladsl.{Source, StreamConverters}
 import akka.util.ByteString
-import com.jliermann.sound.AudioFormatConfig
-import com.jliermann.sound.input.AudioInput.SupportedAudioFormat
+import com.jliermann.sound.environment.AudioInputEnv
+import javax.sound.sampled.{AudioFormat, AudioSystem, TargetDataLine}
 
 import scala.concurrent.Future
 
 object AudioInputLive extends AudioInputLive
 trait AudioInputLive extends AudioInput.Service {
 
-  override def getAudioFormat(audioFormatConfig: AudioFormatConfig): SupportedAudioFormat = SupportedAudioFormat(
-    new AudioFormat(audioFormatConfig.sampleRate,
-      audioFormatConfig.sampleSizeInBits,
-      audioFormatConfig.channels,
-      audioFormatConfig.signed,
-      audioFormatConfig.bigEndian))
+  override def audioWave(env: AudioInputEnv, audioFormat: AudioFormat): Source[Double, Future[IOResult]] = {
+    val bufferSize = (audioFormat.getSampleRate * audioFormat.getFrameSize).toInt * normalBytesFromBits(audioFormat.getSampleSizeInBits)
+    val targetDataLine: TargetDataLine = AudioSystem.getTargetDataLine(audioFormat)
 
-  override def audioWave(audioFormat: SupportedAudioFormat): Source[Double, Future[IOResult]] = {
-    val bufferSize = (audioFormat.format.getSampleRate * audioFormat.format.getFrameSize).toInt * normalBytesFromBits(audioFormat.format.getSampleSizeInBits)
-    val targetDataLine: TargetDataLine = AudioSystem.getTargetDataLine(audioFormat.format)
-
-    targetDataLine.open(audioFormat.format)
+    targetDataLine.open(audioFormat)
     targetDataLine.start()
     StreamConverters
-      .fromInputStream(() => new AudioInputStream(targetDataLine), bufferSize)
-      .flatMapConcat((bs: ByteString) => Source(unpack(bs.toArray, bs.length, audioFormat.format).to))
+      .fromInputStream(() => env.rawAudioSource.audioInputStream(targetDataLine), bufferSize)
+      .flatMapConcat((bs: ByteString) => Source(env.audioInput.unpack(env, bs.toArray, bs.length, audioFormat).to))
   }
 
-  private[input] def unpack(bytes: Array[Byte], bvalid: Int, fmt: AudioFormat): Array[Double] = {
+  def unpack(env: AudioInputEnv, bytes: Array[Byte], bvalid: Int, fmt: AudioFormat): Array[Double] = {
     // cf https://github.com/Radiodef/WaveformDemo/blob/master/waveformdemo/WaveformDemo.java
-    lazy val buffer_sample_size = bytes.length / normalBytesFromBits(fmt.getSampleSizeInBits)
+    lazy val buffer_sample_size = bytes.length / env.audioInput.normalBytesFromBits(fmt.getSampleSizeInBits)
     lazy val bitsPerSample: Int = fmt.getSampleSizeInBits
-    lazy val normalBytes: Int = normalBytesFromBits(bitsPerSample)
+    lazy val normalBytes: Int = env.audioInput.normalBytesFromBits(bitsPerSample)
     lazy val fullScale: Long = Math.pow(2.0, bitsPerSample - 1).toLong
     lazy val signShit: Long = 64L - bitsPerSample
 
@@ -55,5 +46,5 @@ trait AudioInputLive extends AudioInput.Service {
       .map(_ / fullScale.toDouble)
   }
 
-  private[input] def normalBytesFromBits(bitsPerSample: Int): Int = bitsPerSample + 7 >> 3
+  def normalBytesFromBits(bitsPerSample: Int): Int = bitsPerSample >> 3
 }

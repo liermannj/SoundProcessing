@@ -2,7 +2,7 @@ package com.jliermann.sound.input
 
 import akka.stream.IOResult
 import akka.stream.scaladsl.Source
-import com.jliermann.sound.AudioFormatConfig
+import com.jliermann.sound.environment.AudioInputEnv
 import javax.sound.sampled.AudioFormat
 
 import scala.concurrent.Future
@@ -15,12 +15,12 @@ trait AudioInput {
 
 object AudioInput {
 
-  final case class SupportedAudioFormat private(format: AudioFormat)
-
   trait Service {
-    def getAudioFormat(audioFormatConfig: AudioFormatConfig): SupportedAudioFormat
+    def audioWave(env: AudioInputEnv, audioFormat: AudioFormat): Source[Double, Future[IOResult]]
 
-    def audioWave(audioFormat: SupportedAudioFormat): Source[Double, Future[IOResult]]
+    def unpack(env: AudioInputEnv, bytes: Array[Byte], bvalid: Int, fmt: AudioFormat): Array[Double]
+
+    def normalBytesFromBits(bitsPerSample: Int): Int
   }
 
 }

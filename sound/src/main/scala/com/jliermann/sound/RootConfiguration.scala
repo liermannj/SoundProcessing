@@ -4,6 +4,7 @@ import java.io.File
 
 import com.jliermann.sound.domain.SamplingRate
 import com.typesafe.config.Config
+import javax.sound.sampled.AudioFormat
 import pureconfig.generic.ProductHint
 import pureconfig.generic.auto._
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigReader, ConfigSource}
@@ -12,7 +13,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 
 private[sound] case class RootConfiguration(soundConfiguration: SoundConfiguration,
-                             localConfiguration: LocalConfiguration)
+                                            localConfiguration: LocalConfiguration)
 
 private[sound] object RootConfiguration {
   implicit def productHint[T]: ProductHint[T] = ProductHint[T](ConfigFieldMapping(CamelCase, CamelCase))
@@ -24,22 +25,23 @@ private[sound] object RootConfiguration {
     FiniteDuration(length.toLong, unit)
   }
 
+  implicit val audioFormatReader: ConfigReader[AudioFormat] = ConfigReader[Config].map { config =>
+    new AudioFormat(config.getDouble("sampleRate").toFloat,
+      config.getInt("sampleSizeInBits"),
+      config.getInt("channels"),
+      config.getBoolean("signed"),
+      config.getBoolean("bigEndian"))
+  }
+
   def loadConfig(config: Config): Try[RootConfiguration] = Try {
     ConfigSource.fromConfig(config.getConfig("root")).loadOrThrow[RootConfiguration]
   }
 }
 
-case class SoundConfiguration(audioFormatConfig: AudioFormatConfig,
+case class SoundConfiguration(audioFormat: AudioFormat,
                               samplingRate: SamplingRate,
                               overlapping: Double,
                               limitPitchedFrame: Double,
                               silentSeparator: Int)
 
-case class AudioFormatConfig(sampleRate: Float,
-                             sampleSizeInBits: Int,
-                             channels: Int,
-                             signed: Boolean,
-                             bigEndian: Boolean)
-
-private[sound] case class LocalConfiguration(displaySamplingRate: SamplingRate,
-                              outputFile: File)
+private[sound] case class LocalConfiguration(outputFile: File)

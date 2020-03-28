@@ -14,7 +14,7 @@ trait StreamTest extends FlatSpec with Matchers {
 
   implicit lazy val actorSystem: ActorSystem = ActorSystem("TestSystem")
 
-  def awaitResult[T](timeout: FiniteDuration)(source: Source[T, NotUsed]): Seq[T] = {
+  def awaitResult[T](timeout: FiniteDuration)(source: Source[T, _]): Seq[T] = {
     Await.result(source.runWith(Sink.seq), timeout)
   }
 
