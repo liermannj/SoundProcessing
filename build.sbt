@@ -17,7 +17,8 @@ lazy val utils = project.in(file("utils"))
   .settings(commonSettings:_*)
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaStreamVersion
     , libraryDependencies += "org.scalatest" %% "scalatest" % ScalaTestVersion
-    , libraryDependencies += "org.scalacheck" %% "scalacheck" % ScalaCheckVersion)
+    , libraryDependencies += "org.scalacheck" %% "scalacheck" % ScalaCheckVersion
+    , libraryDependencies += "com.jsuereth" %% "scala-arm" % "2.0")
 
 lazy val sound = project.in(file("sound"))
   .dependsOn(utils)

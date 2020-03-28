@@ -3,7 +3,6 @@ package com.jliermann.sound
 import akka.actor.ActorSystem
 import com.jliermann.sound.domain.{Pitched, Silent}
 import com.jliermann.sound.environment.JobEnvironment
-import com.jliermann.sound.output.OutputLive
 
 private[sound] object Job {
 
@@ -16,6 +15,6 @@ private[sound] object Job {
         case Silent => "SILENT"
       })
       .map(_.mkString("{", "---", "}"))
-      .runWith(OutputLive.sinkToFile(config.localConfiguration.outputFile))
+      .runWith(env.output.sinkToFile(config.localConfiguration.outputFile))
   }
 }

@@ -1,12 +1,12 @@
 package com.jliermann.sound.domain
 
-import com.jliermann.utils.test.PropGenUtilsSpec
+import com.jliermann.utils.test.PropGenUtilsTest
 import org.scalacheck.{Arbitrary, Gen}
 
 import scala.concurrent.duration.FiniteDuration
 
 object SamplingRateGens extends SamplingRateGens
-trait SamplingRateGens extends PropGenUtilsSpec {
+trait SamplingRateGens extends PropGenUtilsTest {
 
   implicit val arbSamplingRate: Arbitrary[SamplingRate] = Arbitrary {
     for {

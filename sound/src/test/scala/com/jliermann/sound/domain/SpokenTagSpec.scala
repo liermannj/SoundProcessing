@@ -1,8 +1,8 @@
 package com.jliermann.sound.domain
 
-import com.jliermann.utils.test.PropSpec
+import com.jliermann.utils.test.PropTest
 
-class SpokenTagSpec extends PropSpec with FrameGens {
+class SpokenTagSpec extends PropTest with FrameGens {
 
   "label" should "flag as pitched or silent dependent on a given limit" in forAll { (frame: Frame[Double], limit: Double) =>
     SpokenTag.label(limit)(frame) match {

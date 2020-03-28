@@ -2,12 +2,12 @@ package com.jliermann.sound.process
 
 import akka.stream.scaladsl.Source
 import com.jliermann.sound.domain.{Frame, FrameGens, SamplingRate, SpokenTag}
-import com.jliermann.utils.test.{PropSpec, StreamSpec}
+import com.jliermann.utils.test.{PropTest, StreamTest}
 
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-class AudioWindowingLiveSpec extends PropSpec with StreamSpec with FrameGens {
+class AudioWindowingLiveSpec extends PropTest with StreamTest with FrameGens {
 
   "keepCoherentChunk" should "concatenate chunks of pitched data" in {
     def labelPitched(d: Double): SpokenTag[Double] = SpokenTag.label(d*d - 1)(Frame(Seq(d)))

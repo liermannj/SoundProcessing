@@ -3,8 +3,8 @@ package com.jliermann.utils.test
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-trait PropSpec
+trait PropTest
   extends FlatSpec
     with GeneratorDrivenPropertyChecks
     with Matchers
-    with PropGenUtilsSpec
+    with PropGenUtilsTest

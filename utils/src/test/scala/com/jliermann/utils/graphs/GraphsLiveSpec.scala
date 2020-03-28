@@ -1,12 +1,12 @@
 package com.jliermann.utils.graphs
 
 import akka.stream.scaladsl.Source
-import com.jliermann.utils.test.StreamSpec
+import com.jliermann.utils.test.StreamTest
 
 import scala.collection.immutable
 import scala.concurrent.duration._
 
-class GraphsLiveSpec extends StreamSpec {
+class GraphsLiveSpec extends StreamTest {
 
   "regularize" should "regularly send input" in {
     val input = arbSource[Double](math.pow(10, 3).toInt)

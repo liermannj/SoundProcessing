@@ -10,7 +10,7 @@ import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration.FiniteDuration
 
-trait StreamSpec extends FlatSpec with Matchers {
+trait StreamTest extends FlatSpec with Matchers {
 
   implicit lazy val actorSystem: ActorSystem = ActorSystem("TestSystem")
 
