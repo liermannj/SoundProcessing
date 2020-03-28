@@ -17,7 +17,7 @@ object Output {
 
   trait Service {
 
-    def sinkToFile(file: File): Sink[Any, Future[IOResult]]
+    def sinkToFile[T](file: File): Sink[T, Future[IOResult]]
 
   }
 }

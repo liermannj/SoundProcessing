@@ -11,23 +11,23 @@ object GraphsLive extends GraphsLive
 
 trait GraphsLive extends Graphs.Service {
 
-  override def regularize[T](timeUnit: FiniteDuration)(implicit num: Numeric[T]): Flow[T, Double, NotUsed] = {
+  override def regularize[T: Numeric](timeUnit: FiniteDuration): Flow[T, Double, NotUsed] = {
     Flow[T]
       .conflateWithSeed(Seq(_))(_ :+ _)
-      .map(l => num.toDouble(l.sum) / l.length)
+      .map(l => implicitly[Numeric[T]].toDouble(l.sum) / l.length)
       .throttle(1, timeUnit)
   }
 
-  override def loopLast[T](zero: T)(acc: (T, T) => T): Flow[T, T, NotUsed] = Flow.fromGraph {
+  override def loopLast[T, U](zero: U)(acc: (T, U) => U): Flow[T, U, NotUsed] = Flow.fromGraph {
     GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
 
       val in = b.add(Flow[T])
       val constant = Source(immutable.Iterable(zero))
-      val mergeT0 = b.add(MergePreferred[T](1))
-      val broadcast = b.add(Broadcast[T](2))
-      val zip = b.add(Zip[T, T])
-      val operate = b.add(Flow[(T, T)].map(acc.tupled))
+      val mergeT0 = b.add(MergePreferred[U](1))
+      val broadcast = b.add(Broadcast[U](2))
+      val zip = b.add(Zip[T, U])
+      val operate = b.add(Flow[(T, U)].map(acc.tupled))
 
       /*___________________________________*/ in ~> zip.in0
       /*__________________*/ constant ~> mergeT0 ~> zip.in1

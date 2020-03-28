@@ -33,7 +33,7 @@ trait AudioWindowingLive extends AudioWindowing.Service {
   override def window(env: WindowingEnv, samplingRate: SamplingRate, overlapping: Double): Flow[Double, Frame[Double], NotUsed] = {
     val overlapRecords = (samplingRate.samples * overlapping).toInt
     val newRecords = (samplingRate.samples - overlapRecords).toInt
-    val loop = env.graphs.loopLast[Seq[Double]](Nil) {
+    val loop = env.graphs.loopLast[Seq[Double], Seq[Double]](Nil) {
       case (input, Nil) => List.fill(overlapRecords)(0D) ++ input
       case (input, previous) => previous.slice(newRecords, previous.length) ++ input
     }.map(env.audioWindowing.hamming)
