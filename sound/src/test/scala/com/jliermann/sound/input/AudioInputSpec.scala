@@ -12,7 +12,7 @@ class AudioInputSpec extends StreamTest with PropTest {
     val audioFormat = new AudioFormat(8000F, 8, 1, false, false)
 
     val input = AudioInputEnvMock.rawAudioSource.audioInputStream(null).readAllBytes()
-    val expected = awaitResult(10.seconds)(AudioInputLive.audioWave(AudioInputEnvMock, audioFormat)).map(_.toByte)
+    val expected = awaitResult(10.seconds)(AudioInputLive.audioWave(AudioInputEnvMock, audioFormat, null)).map(_.toByte)
 
     input should contain theSameElementsInOrderAs expected
   }

@@ -3,21 +3,18 @@ import akka.stream.IOResult
 import akka.stream.scaladsl.{Source, StreamConverters}
 import akka.util.ByteString
 import com.jliermann.sound.environment.AudioInputEnv
-import javax.sound.sampled.{AudioFormat, AudioSystem, TargetDataLine}
+import javax.sound.sampled.{AudioFormat, TargetDataLine}
 
 import scala.concurrent.Future
 
 object AudioInputLive extends AudioInputLive
 trait AudioInputLive extends AudioInput.Service {
 
-  override def audioWave(env: AudioInputEnv, audioFormat: AudioFormat): Source[Double, Future[IOResult]] = {
+  override def audioWave(env: AudioInputEnv, audioFormat: AudioFormat, tdl: TargetDataLine): Source[Double, Future[IOResult]] = {
     val bufferSize = (audioFormat.getSampleRate * audioFormat.getFrameSize).toInt * normalBytesFromBits(audioFormat.getSampleSizeInBits)
-    val targetDataLine: TargetDataLine = AudioSystem.getTargetDataLine(audioFormat)
 
-    targetDataLine.open(audioFormat)
-    targetDataLine.start()
     StreamConverters
-      .fromInputStream(() => env.rawAudioSource.audioInputStream(targetDataLine), bufferSize)
+      .fromInputStream(() => env.rawAudioSource.audioInputStream(tdl), bufferSize)
       .flatMapConcat((bs: ByteString) => Source(env.audioInput.unpack(env, bs.toArray, bs.length, audioFormat).to))
   }
 

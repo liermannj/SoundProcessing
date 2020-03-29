@@ -5,6 +5,7 @@ import akka.stream.scaladsl.Source
 import com.jliermann.sound.SoundConfiguration
 import com.jliermann.sound.domain.SpokenTag
 import com.jliermann.sound.environment.WordSourceEnvironment
+import javax.sound.sampled.TargetDataLine
 
 import scala.concurrent.Future
 
@@ -18,7 +19,7 @@ object WordSource {
 
   trait Service {
 
-    def source(env: WordSourceEnvironment, config: SoundConfiguration): Source[Seq[SpokenTag[Double]], Future[IOResult]]
+    def source(env: WordSourceEnvironment, config: SoundConfiguration, tdl: TargetDataLine): Source[Seq[SpokenTag[Double]], Future[IOResult]]
 
   }
 }

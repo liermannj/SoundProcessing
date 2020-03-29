@@ -10,7 +10,6 @@ import pureconfig.generic.auto._
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigReader, ConfigSource}
 
 import scala.concurrent.duration.FiniteDuration
-import scala.util.Try
 
 private[sound] case class RootConfiguration(soundConfiguration: SoundConfiguration,
                                             localConfiguration: LocalConfiguration)
@@ -33,7 +32,7 @@ private[sound] object RootConfiguration {
       config.getBoolean("bigEndian"))
   }
 
-  def loadConfig(config: Config): Try[RootConfiguration] = Try {
+  def loadConfigOrThrow(config: Config): RootConfiguration = {
     ConfigSource.fromConfig(config.getConfig("root")).loadOrThrow[RootConfiguration]
   }
 }
