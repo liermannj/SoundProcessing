@@ -1,6 +1,7 @@
 package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
+import com.jliermann.analyze.environment.TransformatorEnv
 
 import scala.util.Try
 
@@ -14,9 +15,9 @@ object SignalTransform {
 
   trait Service {
 
-    def fourier(env: SignalTransform, signal: Signal): Try[Fourier]
+    def fourier(env: TransformatorEnv, signal: Signal): Try[Fourier]
 
-    def cosine(env: SignalTransform, signal: Signal): Try[Cosine]
+    def cosine(env: TransformatorEnv, signal: Signal): Try[Cosine]
 
     def fillSignal(signal: Signal): Try[Signal]
 

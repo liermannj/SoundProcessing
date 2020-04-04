@@ -7,7 +7,7 @@ import com.jliermann.utils.graph.output.Output
 
 package object environment {
 
-  type JobEnvironment = AudioInput
+  private[sound] type JobEnvironment = AudioInput
     with RawAudioSource
     with AudioWindowing
     with Graphs
