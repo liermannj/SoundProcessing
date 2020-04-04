@@ -8,6 +8,7 @@ val ScalaCheckVersion = "1.14.3"
 val ScalaArmVersion = "2.0"
 val LogbackVersion = "3.9.2"
 val LogbackBackend = "1.2.3"
+val ApacheCommonsVersion = "3.0"
 
 val commonSettings = Seq(name := "SoundProcessing"
   , version := "0.1-SNAPSHOT")
@@ -26,7 +27,9 @@ def runnableProject(n: String, boot: String) = {
 
 lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
-  .aggregate(sound)
+  .aggregate(
+    sound,
+    analyze)
 
 lazy val testUtils = anyProject("test-utils")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaStreamVersion
@@ -46,3 +49,7 @@ lazy val sound = runnableProject("sound", "com.jliermann.sound.Boot")
     , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion
     , libraryDependencies += "ch.qos.logback" % "logback-classic" % LogbackBackend
     , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion)
+
+lazy val analyze = runnableProject("analyze", "com.jliermann.analyze.Boot")
+  .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
+    , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion)
