@@ -2,8 +2,8 @@ package com.jliermann.sound
 
 import com.jliermann.sound.input.{AudioInput, RawAudioSource}
 import com.jliermann.sound.process.{AudioWindowing, WordSource}
-import com.jliermann.utils.graphs.Graphs
-import com.jliermann.utils.output.Output
+import com.jliermann.utils.graph.graphs.Graphs
+import com.jliermann.utils.graph.output.Output
 
 package object environment {
 

@@ -2,8 +2,8 @@ package com.jliermann.sound.environment
 
 import com.jliermann.sound.input.{AudioInput, AudioInputLive, RawAudioSource, RawAudioSourceLive}
 import com.jliermann.sound.process.{AudioWindowing, AudioWindowingLive, WordSource, WordSourceLive}
-import com.jliermann.utils.graphs.{Graphs, GraphsLive}
-import com.jliermann.utils.output.{Output, OutputLive}
+import com.jliermann.utils.graph.graphs.{Graphs, GraphsLive}
+import com.jliermann.utils.graph.output.{Output, OutputLive}
 
 private[sound] object EnvironmentLive extends EnvironmentLive
 private[sound] trait EnvironmentLive

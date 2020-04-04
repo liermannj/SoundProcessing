@@ -2,7 +2,7 @@ package com.jliermann.sound.process
 
 import akka.NotUsed
 import akka.stream.scaladsl.Flow
-import com.jliermann.utils.graphs.{Graphs, GraphsLive}
+import com.jliermann.utils.graph.graphs.{Graphs, GraphsLive}
 
 import scala.concurrent.duration.FiniteDuration
 

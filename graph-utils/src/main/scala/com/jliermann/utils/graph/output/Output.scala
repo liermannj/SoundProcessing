@@ -1,4 +1,4 @@
-package com.jliermann.utils.output
+package com.jliermann.utils.graph.output
 
 import java.io.File
 
