@@ -1,6 +1,8 @@
 package com.jliermann.analyze.math
 
+import com.jliermann.analyze.FeatureExtractionConfig
 import com.jliermann.analyze.domain.SignalTypes._
+import com.jliermann.analyze.environment._
 
 import scala.util.Try
 
@@ -13,8 +15,10 @@ trait FeatureExtractor {
 object FeatureExtractor {
 
   trait Service {
-    def fourierCoefs(env: SignalTransform, fourier: Fourier, size: Int): Try[FourierCoefs]
+    def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier, config: FeatureExtractionConfig): Try[FourierCoefs]
 
-    def mfc(env: SignalTransform, fourierCoefs: FourierCoefs, size: Int): Try[MFC]
+    def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs, config: FeatureExtractionConfig): Try[MFC]
+
+    def fourierFundamental(fourier: Fourier): Try[Int]
   }
 }

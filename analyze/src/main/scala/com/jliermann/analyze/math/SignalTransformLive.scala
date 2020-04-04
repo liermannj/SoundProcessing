@@ -1,6 +1,7 @@
 package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
+import com.jliermann.analyze.environment.TransformatorEnv
 import org.apache.commons.math3.transform.{DctNormalization, DftNormalization, FastCosineTransformer, FastFourierTransformer, TransformType}
 import org.apache.commons.math3.util.{FastMath => fm}
 
@@ -13,14 +14,14 @@ trait SignalTransformLive extends SignalTransform.Service {
   private val fourierTransformer = new FastFourierTransformer(DftNormalization.STANDARD)
   private val cosineTransformer = new FastCosineTransformer(DctNormalization.STANDARD_DCT_I)
 
-  override def fourier(env: SignalTransform, signal: Signal): Try[Fourier] = {
+  override def fourier(env: TransformatorEnv, signal: Signal): Try[Fourier] = {
     for {
       filledSignal <- env.signalTransform.fillSignal(signal)
       transformed <- Try(fourierTransformer.transform(filledSignal.toArray, TransformType.FORWARD))
     } yield Fourier(transformed)
   }
 
-  override def cosine(env: SignalTransform, signal: Signal): Try[Cosine] = {
+  override def cosine(env: TransformatorEnv, signal: Signal): Try[Cosine] = {
     for {
       filledSignal <- env.signalTransform.fillSignal(signal)
       transformed <- Try(cosineTransformer.transform((filledSignal :+ 0D).toArray, TransformType.FORWARD))

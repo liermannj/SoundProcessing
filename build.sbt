@@ -52,4 +52,5 @@ lazy val sound = runnableProject("sound", "com.jliermann.sound.Boot")
 
 lazy val analyze = runnableProject("analyze", "com.jliermann.analyze.Boot")
   .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
-    , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion)
+    , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion
+    , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion)

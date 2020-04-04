@@ -1,27 +1,18 @@
 package com.jliermann.analyze
 
-import com.jliermann.analyze.domain.SignalTypes.{FourierCoefs, MFC}
 import com.jliermann.analyze.environment.EnvironmentLive
-import org.apache.commons.math3.transform.{DftNormalization, FastFourierTransformer}
-import org.apache.commons.math3.util.FastMath
+import com.typesafe.config.ConfigFactory
 
 object Boot extends App {
-  import A._
+  import Tmp._
 
-  val out = for {
-    fourier <- EnvironmentLive.signalTransform.fourier(EnvironmentLive, input)
-    fc @ FourierCoefs(firstFreq, fourierCoefs) <- EnvironmentLive.featureExtractor.fourierCoefs(EnvironmentLive, fourier, 20)
-    MFC(mfcc) <- EnvironmentLive.featureExtractor.mfc(EnvironmentLive, fc, 12)
-    result = firstFreq +: (fourierCoefs ++ mfcc)
-  } yield {
-    println(result.mkString(";"))
-  }
+  val config = RootConfiguration.loadConfigOrThrow(ConfigFactory.load())
+  val result = EnvironmentLive.preparator.prepareSignal(EnvironmentLive, input, config.analyzeConfiguration)
 
-  out.get
-
+  println(result.get.mkString(";"))
 }
 
-object A {
+object Tmp {
   val input = Seq(1.348738117,
   0.98078528,
   0.603386945,
