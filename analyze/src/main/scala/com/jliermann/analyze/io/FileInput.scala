@@ -7,6 +7,7 @@ import com.jliermann.analyze.domain.SignalTypes.Signal
 import com.jliermann.analyze.environment.FileInputEnv
 
 import scala.io.Codec
+import scala.util.Try
 
 
 private[analyze] trait FileInput {
@@ -16,9 +17,9 @@ private[analyze] object FileInput {
 
   trait Service {
 
-    def readSignal(env: FileInputEnv, config: FileReaderConfig): Seq[Seq[Signal]]
+    def readSignal(env: FileInputEnv, config: FileReaderConfig): Try[Seq[Seq[Signal]]]
 
-    def readFromFile(file: File, codec: Codec): Seq[String]
+    def readFromFile(file: File, codec: Codec): Try[Seq[String]]
   }
 
 }

@@ -28,7 +28,8 @@ case class AnalyzeConfiguration(fourierFeatureConfig: FeatureExtractionConfig,
 
 case class FeatureExtractionConfig(size: Int, normalize: Option[Boolean])
 
-private[analyze] case class LocalConfiguration(input: FileReaderConfig)
+private[analyze] case class LocalConfiguration(input: FileReaderConfig,
+                                               output: File)
 
 private[analyze] case class FileReaderConfig(file: File,
                                              codec: Codec,
