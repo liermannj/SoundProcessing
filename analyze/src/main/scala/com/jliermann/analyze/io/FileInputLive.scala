@@ -12,16 +12,20 @@ import scala.util.{Success, Try}
 
 private[analyze] object FileInputLive extends FileInputLive
 private[analyze] trait FileInputLive extends FileInput.Service {
-  override def readSignal(env: FileInputEnv, config: FileReaderConfig): Seq[Seq[Signal]] = {
-    env.fileInput.readFromFile(config.file, config.codec) // lines
-      .map(_.split(config.sampleSep) // samples
-        .map(tryToDouble(config.numberSep))
-        .filterNot(_.exists(_.isFailure))
-        .map(_.collect { case Success(d) => d})
-        .toSeq)
+  override def readSignal(env: FileInputEnv, config: FileReaderConfig): Try[Seq[Seq[Signal]]] = {
+    for {
+      file: Seq[String] <- env.fileInput.readFromFile(config.file, config.codec)
+      sampledLines: Seq[Seq[String]] <- Try(file.map(_.split(config.sampleSep).toSeq))
+      numberedFile <- Try {
+        sampledLines.map(_
+          .map(tryToDouble(config.numberSep))
+          .filterNot(_.exists(_.isFailure))
+          .map(_.collect { case Success(d) => d}))
+      }
+    } yield numberedFile
   }
 
-  override def readFromFile(file: File, codec: Codec): Seq[String] = {
+  override def readFromFile(file: File, codec: Codec): Try[Seq[String]] = Try {
     managed(Source.fromFile(file)(codec)).acquireAndGet(_.getLines().to[Seq])
   }
 
