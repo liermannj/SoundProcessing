@@ -2,7 +2,7 @@ package com.jliermann.analyze
 
 import com.jliermann.analyze.io.{FileInput, FileOutput}
 import com.jliermann.analyze.math.{FeatureExtractor, SignalTransform}
-import com.jliermann.analyze.transform.Preparator
+import com.jliermann.analyze.preprocess.Preparator
 
 package object environment {
 
@@ -19,6 +19,8 @@ package object environment {
   type MFCFeatureExtractorEnv = SignalTransform
 
   type PreparatorEnv = FeatureExtractor with SignalTransform
+
+  type EnregPreparatorEnv = FeatureExtractor with SignalTransform with Preparator
 
   private[analyze] type FileInputEnv = FileInput
 

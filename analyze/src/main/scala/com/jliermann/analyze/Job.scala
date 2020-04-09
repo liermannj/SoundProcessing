@@ -1,40 +1,30 @@
 package com.jliermann.analyze
 
-import com.jliermann.analyze.domain.SignalTypes.{Coef, Coefs, Signal}
+import com.jliermann.analyze.domain.SignalTypes.Signal
 import com.jliermann.analyze.environment.JobEnvironment
-import org.apache.commons.math3.util.FastMath
-import scala.util.{Success, Try}
+import com.jliermann.analyze.seq.TrySeqOps._
+
+import scala.util.{Failure, Success}
 
 private[analyze] object Job {
 
-  def run(env: JobEnvironment, config: RootConfiguration): Try[Unit] = {
+  def run(env: JobEnvironment, config: RootConfiguration): Either[Seq[Throwable], Unit] = {
     import config._
-    for {
-      input: Seq[Seq[Signal]] <- env.fileInput.readSignal(env, localConfiguration.input)
-      transformed: Seq[Coefs] = input
-        .map { in =>
-          val tr = in.map(env.preparator.prepareSignal(env, _, analyzeConfiguration))
-            .collect { case Success(value) => value }
+    val result = for {
+      input: Seq[Seq[Signal]] <- env.fileInput.readEnregs(env, localConfiguration.input)
+      coefs = input.map(env.preparator.prepareEnreg(env, config.analyzeConfiguration))
+      stringCoefs: Seq[String] = coefs
+        .rights
+        .map(_.mkString(";"))
 
+      _ <- env.fileOutput.writeToFile(localConfiguration.output, stringCoefs)
+    } yield coefs.lefts.flatten
 
-          tr// transpose
-            .foldLeft(tr.map(_ => Seq.empty[Double])) {
-              case (transpose: Seq[Seq[Coef]], values) =>
-                val zippedValues: Seq[(Coef, Int)] = values.zipWithIndex
-                transpose
-                  .zipWithIndex
-                  .map{case (acc: Seq[Coef], i) => acc :+ zippedValues.find(_._2 == i).get._1}
-            }// compute
-            .flatMap {xs =>
-            val mean = xs.sum / xs.length
-            val std = xs.map(_ - mean).map(FastMath.pow(_, 2)).sum
-            mean :: std :: Nil
-          }
-        }
-
-      trToString = transformed.map(_.mkString(";"))
-      _ <- env.fileOutput.writeToFile(localConfiguration.output, trToString)
-    } yield ()
+    result match {
+      case Success(Nil) => Right()
+      case Success(exceptions) => Left(exceptions)
+      case Failure(exception) => Left(exception :: Nil)
+    }
   }
 
 }

@@ -17,7 +17,7 @@ private[analyze] object FileInput {
 
   trait Service {
 
-    def readSignal(env: FileInputEnv, config: FileReaderConfig): Try[Seq[Seq[Signal]]]
+    def readEnregs(env: FileInputEnv, config: FileReaderConfig): Try[Seq[Seq[Signal]]]
 
     def readFromFile(file: File, codec: Codec): Try[Seq[String]]
   }
