@@ -2,7 +2,7 @@ package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
 import com.jliermann.analyze.environment.TransformatorEnv
-import org.apache.commons.math3.transform.{DctNormalization, DftNormalization, FastCosineTransformer, FastFourierTransformer, TransformType}
+import org.apache.commons.math3.transform._
 import org.apache.commons.math3.util.{FastMath => fm}
 
 import scala.util.Try
