@@ -12,7 +12,6 @@ import scala.concurrent.Future
 private[sound] object Job {
 
   def run(env: JobEnvironment, config: RootConfiguration, tdl: TargetDataLine)(implicit actorSystem: ActorSystem): Future[IOResult] = {
-    println("GOOOOO")
     env.wordSource.source(env, config.soundConfiguration, tdl)
       .map(_.map {
         case Pitched(xs) => xs.mkString("[", "; ", "]")
@@ -21,5 +20,5 @@ private[sound] object Job {
       .map(_.mkString("{", "---", "}"))
       .toMat(env.output.sinkToFile(config.localConfiguration.outputFile))(Keep.right)
       .run
-    }
+  }
 }
