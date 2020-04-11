@@ -1,4 +1,4 @@
-package com.jliermann.utils.graphs
+package com.jliermann.utils.graph.graphs
 
 import akka.stream.scaladsl.Source
 import com.jliermann.utils.test.StreamTest

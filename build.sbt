@@ -9,26 +9,40 @@ val ScalaArmVersion = "2.0"
 val LogbackVersion = "3.9.2"
 val LogbackBackend = "1.2.3"
 
-lazy val commonSettings = Seq(name := "SoundProcessing"
+val commonSettings = Seq(name := "SoundProcessing"
   , version := "0.1-SNAPSHOT")
+
+def anyProject(n: String): Project = {
+  Project(n, file(n))
+    .settings(commonSettings: _*)
+}
+
+def runnableProject(n: String, boot: String) = {
+  anyProject(n)
+    .settings(Compile / mainClass := Some(boot))
+    .configs(IntegrationTest)
+    .settings(Defaults.itSettings)
+}
 
 lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .aggregate(sound)
 
-lazy val utils = project.in(file("utils"))
-  .settings(commonSettings: _*)
+lazy val testUtils = anyProject("test-utils")
   .settings(libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaStreamVersion
     , libraryDependencies += "org.scalatest" %% "scalatest" % ScalaTestVersion
     , libraryDependencies += "org.scalacheck" %% "scalacheck" % ScalaCheckVersion
     , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion)
 
-lazy val sound = project.in(file("sound"))
-  .dependsOn(utils)
-  .configs(IntegrationTest)
-  .settings(Defaults.itSettings)
-  .settings(commonSettings: _*)
-  .settings(Compile / mainClass := Some("com.jliermann.sound.Boot"))
+lazy val graphUtils = anyProject("graph-utils")
+  .dependsOn(testUtils % Test)
+  .settings(libraryDependencies += "com.typesafe.akka" %% "akka-stream" % AkkaStreamVersion)
+
+lazy val sound = runnableProject("sound", "com.jliermann.sound.Boot")
+  .dependsOn(testUtils % IntegrationTest)
+  .dependsOn(testUtils % Test)
+  .dependsOn(graphUtils)
   .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
+    , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion
     , libraryDependencies += "ch.qos.logback" % "logback-classic" % LogbackBackend
     , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion)
