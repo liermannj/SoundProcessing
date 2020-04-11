@@ -19,6 +19,12 @@ object WordSource {
 
   trait Service {
 
+    /**
+     * Create a source composed of a refined sound ingestion, separating itself consecutive spoken sequences
+     * The composition of each Frame is defined by the config parameter, as well as the sensibility of the source to distinguish spoken sequences
+     * @return elements corresponding to individual spoken enregs, composed of a variable number of Spoken Frames or Silent Frames
+     *
+     */
     def source(env: WordSourceEnvironment, config: SoundConfiguration, tdl: TargetDataLine): Source[Seq[SpokenTag[Double]], Future[IOResult]]
 
   }
