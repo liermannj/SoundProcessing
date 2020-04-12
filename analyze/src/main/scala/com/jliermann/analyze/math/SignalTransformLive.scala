@@ -1,7 +1,7 @@
 package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
-import com.jliermann.analyze.environment.TransformatorEnv
+import com.jliermann.analyze.environment.{AggregateEnv, TransformatorEnv}
 import org.apache.commons.math3.transform._
 import org.apache.commons.math3.util.{FastMath => fm}
 
@@ -29,23 +29,33 @@ trait SignalTransformLive extends SignalTransform.Service {
   }
 
   override def fillSignal(signal: Signal): Try[Signal] = Try {
-    val ceiled2Pow = fm.pow(2, fm.ceil(fm.log(2, signal.length))).toInt
+    val ceiled2Pow = fm.max(fm.pow(2, fm.ceil(fm.log(2, signal.length))).toInt, 2)
     val fillingSize = ceiled2Pow - signal.length
     signal ++ Seq.fill(fillingSize)(0D)
   }
 
-  override def aggregateWindow(seq: Signal): Try[Coef] = Try {
-    // triangular signal
-    val f = (x: Int) => -fm.abs(-1 + 2 * (x.toDouble / seq.length)) + 1
+  override def aggregateWindow(env: AggregateEnv)(seq: Signal): Try[Coef] = Try {
+    val f = env.rawMath.triangular(seq.length)
     seq
       .zipWithIndex
       .map { case (value, index) => value * f(index) }
       .sum
   }
 
-  override def normalize(seq: Signal): Try[Signal] = Try {
-    seq.map(_ / seq.map(fm.abs).max)
+  override def normalize(seq: Signal): Signal = {
+    if ((seq :+ 0D).distinct.length <= 1) seq
+    else {
+      val max = seq.map(fm.abs).max
+      seq.map(_ / max)
+    }
   }
 
+  override def positiveShift(seq: Signal): Signal = {
+    if ((seq :+ 0D).distinct.length <= 1) seq
+    else {
+      val min = fm.abs((seq :+ 0D).min)
+      seq.map(_ + min)
+    }
+  }
 
 }

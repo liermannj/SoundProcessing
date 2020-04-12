@@ -10,7 +10,7 @@ object AudioWindowingLive extends AudioWindowingLive {
 
   @scala.annotation.tailrec
   final private[process] def trimSilentHead(input: Seq[SpokenTag[Double]]): Seq[SpokenTag[Double]] = {
-    if(input.headOption.exists(_.isSilent)) trimSilentHead(input.tail)
+    if (input.headOption.exists(_.isSilent)) trimSilentHead(input.tail)
     else input
   }
 
@@ -20,6 +20,7 @@ object AudioWindowingLive extends AudioWindowingLive {
 }
 
 trait AudioWindowingLive extends AudioWindowing.Service {
+
   import AudioWindowingLive._
 
   override def keepCoherentChunk(env: WindowingEnv, silentSep: Int): Flow[SpokenTag[Double], Seq[SpokenTag[Double]], NotUsed] = {

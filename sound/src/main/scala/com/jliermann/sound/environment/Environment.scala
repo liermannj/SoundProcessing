@@ -6,6 +6,7 @@ import com.jliermann.utils.graph.graphs.{Graphs, GraphsLive}
 import com.jliermann.utils.graph.output.{Output, OutputLive}
 
 private[sound] object EnvironmentLive extends EnvironmentLive
+
 private[sound] trait EnvironmentLive
   extends SoundEnvironment
     with WordSource
@@ -18,6 +19,7 @@ private[sound] trait EnvironmentLive
 }
 
 object SoundEnvironment extends SoundEnvironment
+
 trait SoundEnvironment
   extends AudioInput
     with RawAudioSource

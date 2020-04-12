@@ -10,17 +10,19 @@ import scala.concurrent.duration._
 class AudioWindowingLiveSpec extends PropTest with StreamTest with FrameGens {
 
   "keepCoherentChunk" should "concatenate chunks of pitched data" in {
-    def labelPitched(d: Double): SpokenTag[Double] = SpokenTag.label(d*d - 1)(Frame(Seq(d)))
-    def labelSilent(d: Double): SpokenTag[Double] = SpokenTag.label(d*d + 1)(Frame(Seq(d)))
+    def labelPitched(d: Double): SpokenTag[Double] = SpokenTag.label(d * d - 1)(Frame(Seq(d)))
+
+    def labelSilent(d: Double): SpokenTag[Double] = SpokenTag.label(d * d + 1)(Frame(Seq(d)))
+
     val input = Source(immutable.Iterable(
       labelPitched(2), labelSilent(1), labelPitched(3), labelSilent(1), labelSilent(1), labelSilent(1),
-      labelPitched(2),labelPitched(2),labelSilent(1), labelSilent(1),labelPitched(2)))
+      labelPitched(2), labelPitched(2), labelSilent(1), labelSilent(1), labelPitched(2)))
 
     val result = awaitResult(10.second)(input.via(AudioWindowingLive.keepCoherentChunk(AudioWindowingEnvMock, 2)))
 
-    val expected = Seq(Seq(labelPitched(2), labelSilent(1), labelPitched(3)), Seq(labelPitched(2),labelPitched(2)))
+    val expected = Seq(Seq(labelPitched(2), labelSilent(1), labelPitched(3)), Seq(labelPitched(2), labelPitched(2)))
     result.zip(expected)
-      .foreach { case (r, e) => r shouldBe e}
+      .foreach { case (r, e) => r shouldBe e }
   }
 
   "window" should "return arrays of the length given by the sampling rate" in {
@@ -39,8 +41,8 @@ class AudioWindowingLiveSpec extends PropTest with StreamTest with FrameGens {
       input.via(AudioWindowingLive.window(AudioWindowingEnvMock, SamplingRate(10, 0.1.second), 0.1))
     }
 
-    val resultMinusOne =  Frame(Seq.fill(10)(0D)) +: result.reverse.tail.reverse
-    result.zip(resultMinusOne).foreach { case (r, rM1) => r.xs.head shouldBe rM1.xs.reverse.head}
+    val resultMinusOne = Frame(Seq.fill(10)(0D)) +: result.reverse.tail.reverse
+    result.zip(resultMinusOne).foreach { case (r, rM1) => r.xs.head shouldBe rM1.xs.reverse.head }
   }
 
   "labelPitched" should "apply a SpokenTag over a stream" in forAll { limit: Double =>

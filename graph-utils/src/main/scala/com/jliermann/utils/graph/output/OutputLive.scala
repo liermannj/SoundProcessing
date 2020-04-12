@@ -9,6 +9,7 @@ import akka.util.ByteString
 import scala.concurrent.Future
 
 object OutputLive extends OutputLive
+
 trait OutputLive extends Output.Service {
 
   def sinkToFile[T](file: File): Sink[T, Future[IOResult]] = {

@@ -41,7 +41,7 @@ trait GraphsLive extends Graphs.Service {
     GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
 
-      val enhancedAcc: (T, U) => (U, U) = (el: T, accu: U) => if(stop(accu)) (acc(el, zero), accu) else (acc(el, accu), zero)
+      val enhancedAcc: (T, U) => (U, U) = (el: T, accu: U) => if (stop(accu)) (acc(el, zero), accu) else (acc(el, accu), zero)
 
       val in = b.add(Flow[T])
       val transfer = b.add(Unzip[U, U])
@@ -50,7 +50,8 @@ trait GraphsLive extends Graphs.Service {
       val zip = b.add(Zip[T, U])
       val operate = b.add(Flow[(T, U)].map(enhancedAcc.tupled))
 
-      /*_________________*/ in ~> zip.in0 ; zip.out ~> operate ~> transfer.in
+      /*_________________*/ in ~> zip.in0;
+      zip.out ~> operate ~> transfer.in
       /*____________*/ mergeT0 ~> zip.in1
       /**/ constant ~> mergeT0.in(1)
       transfer.out0 ~> mergeT0.in(0)

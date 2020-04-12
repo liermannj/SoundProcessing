@@ -3,39 +3,46 @@ package com.jliermann.analyze.math
 import com.jliermann.analyze.FeatureExtractionConfig
 import com.jliermann.analyze.domain.SignalTypes._
 import com.jliermann.analyze.environment._
+import com.jliermann.analyze.seq.SeqOps._
 import org.apache.commons.math3.util.{FastMath => fm}
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
-object FeatureExtractorLive extends FeatureExtractorLive
+object FeatureExtractorLive extends FeatureExtractorLive {
+  val IgnoredMFCCoefs = 2
+}
 
 trait FeatureExtractorLive extends FeatureExtractor.Service {
+
+  import FeatureExtractorLive._
+
   override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier, config: FeatureExtractionConfig): Try[FourierCoefs] = {
+    val absFourier = fourier.xs.map(_.abs)
     for {
       fundamental <- env.featureExtractor.fourierFundamental(fourier)
-      absFourier = fourier.xs.map(_.abs)
-
       coefs <- Try((fundamental until (config.size * fundamental) by fundamental)
-        .map(middle => absFourier.slice(fm.max(0, middle - fundamental), fm.min(middle + fundamental, absFourier.length - 1)))
-        .map(env.signalTransform.aggregateWindow)
+        .map(middle => absFourier.safeCenteredSlice(middle, fundamental))
+        .map(env.signalTransform.aggregateWindow(env))
         .map(_.getOrElse(0D)))
 
-      normalizedOrSameCoefs <- config.normalize.filter(identity).fold[Try[Signal]](Success(coefs))(_ =>
-        env.signalTransform.normalize(coefs))
-    } yield FourierCoefs(fundamental, normalizedOrSameCoefs)
+    } yield config.normalize
+      .filter(identity)
+      .fold(FourierCoefs(fundamental, coefs))(_ => FourierCoefs(fundamental, env.signalTransform.normalize(coefs)))
   }
 
   override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs, config: FeatureExtractionConfig): Try[MFC] = {
     for {
-      logCoefs <- Try(fourierCoefs.coefs.map(fm.log).map(n => if (n.isInfinity || n.isNaN) 0 else n))
-      Cosine(xs) <- env.signalTransform.cosine(env, logCoefs.map(_ + fm.abs(logCoefs.min)))
-      coefs = xs.tail.tail.take(config.size)
-      normalizedOfSame <- config.normalize.filter(identity).fold[Try[Signal]](Success(coefs))(_ =>
-        env.signalTransform.normalize(coefs))
-    } yield MFC(normalizedOfSame)
+      logCoefs <- Try(fourierCoefs.coefs.map(env.rawMath.log))
+      positiveLogCoefs = env.signalTransform.positiveShift(logCoefs)
+      Cosine(xs) <- env.signalTransform.cosine(env, positiveLogCoefs)
+      coefs = xs.slice(IgnoredMFCCoefs, config.size + IgnoredMFCCoefs)
+
+    } yield config.normalize
+      .filter(identity)
+      .fold(MFC(coefs))(_ => MFC(env.signalTransform.normalize(coefs)))
   }
 
-  def fourierFundamental(fourier: Fourier): Try[Int] = Try {
+  override def fourierFundamental(fourier: Fourier): Try[Int] = Try {
     val absFourier = fourier.xs.map(_.abs)
     val indexOfMax :: indexOfSecond :: _ = absFourier
       .zipWithIndex

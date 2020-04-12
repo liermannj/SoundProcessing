@@ -10,6 +10,7 @@ import javax.sound.sampled.TargetDataLine
 import scala.concurrent.Future
 
 object WordSourceLive extends WordSourceLive
+
 trait WordSourceLive extends WordSource.Service {
   override def source(env: WordSourceEnvironment, config: SoundConfiguration, tdl: TargetDataLine): Source[Seq[SpokenTag[Double]], Future[IOResult]] = {
     env.audioInput.audioWave(env, config.audioFormat, tdl)

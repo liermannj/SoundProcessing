@@ -1,7 +1,7 @@
 package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
-import com.jliermann.analyze.environment.TransformatorEnv
+import com.jliermann.analyze.environment.{AggregateEnv, TransformatorEnv}
 
 import scala.util.Try
 
@@ -21,9 +21,11 @@ object SignalTransform {
 
     def fillSignal(signal: Signal): Try[Signal]
 
-    def aggregateWindow(seq: Signal): Try[Coef]
+    def aggregateWindow(env: AggregateEnv)(seq: Signal): Try[Coef]
 
-    def normalize(seq: Signal): Try[Signal]
+    def normalize(seq: Signal): Signal
+
+    def positiveShift(seq: Signal): Signal
   }
 
 }

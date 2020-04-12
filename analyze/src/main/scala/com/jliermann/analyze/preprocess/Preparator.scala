@@ -20,4 +20,5 @@ object Preparator {
     def prepareSignal(env: PreparatorEnv, config: AnalyzeConfiguration)(signal: Signal): Try[Coefs]
 
   }
+
 }

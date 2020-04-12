@@ -6,7 +6,9 @@ import com.typesafe.scalalogging.LazyLogging
 
 object Boot extends App with LazyLogging {
   val config = RootConfiguration.loadConfigOrThrow(ConfigFactory.load())
+
   import config.localConfiguration._
+
   Job.run(EnvironmentLive, config) match {
     case Right(_) =>
       logger.info(s"Successfully converted enregs from file ${input.file} to footPrints $output")

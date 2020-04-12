@@ -1,24 +1,24 @@
 package com.jliermann.analyze.domain
 
-case class Matrix[T](xxs: Seq[Seq[T]]) {
+import scala.util.{Failure, Success, Try}
 
-  lazy val rows: Seq[Seq[T]] = xxs
-
-  lazy val cols: Seq[Seq[T]] = transpose.xxs
-
-  def mapCase[U](f: T => U): Matrix[U] = mapRows(_.map(f))
-
-  def mapRows[U](f: Seq[T] => Seq[U]): Matrix[U] = Matrix(rows.map(f))
-
-  def mapCols[U](f: Seq[T] => Seq[U]): Matrix[U] = Matrix(cols.map(f)).transpose
+case class Matrix[T] private(xxs: Seq[Seq[T]]) {
 
   def transpose: Matrix[T] = {
     @scala.annotation.tailrec
     def transposeRec(input: Seq[Seq[T]], acc: Seq[Seq[T]] = Nil): Seq[Seq[T]] = {
-      if(input.headOption.isEmpty || input.head.isEmpty) acc
+      if (input.headOption.isEmpty || input.head.isEmpty) acc
       else transposeRec(input.map(_.tail), acc :+ input.map(_.head))
     }
 
-    Matrix(transposeRec(xxs))
+    new Matrix(transposeRec(xxs))
+  }
+}
+
+object Matrix {
+
+  def apply[T](xxs: Seq[Seq[T]]): Try[Matrix[T]] = {
+    if (xxs.map(_.length).distinct.length <= 1) Success(new Matrix(xxs))
+    else Failure(new IllegalArgumentException(s"Matrix must be rectangular, found $xxs"))
   }
 }
