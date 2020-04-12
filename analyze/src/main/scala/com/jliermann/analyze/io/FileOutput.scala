@@ -13,4 +13,5 @@ private[analyze] object FileOutput {
   trait Service {
     def writeToFile(file: File, data: Seq[String]): Try[Unit]
   }
+
 }

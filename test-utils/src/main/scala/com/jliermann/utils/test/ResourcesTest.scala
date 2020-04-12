@@ -26,7 +26,7 @@ trait ResourcesTest {
   }
 
   def recursiveDelete(f: File): Unit = {
-    if(f.isDirectory) f.listFiles().foreach(recursiveDelete)
+    if (f.isDirectory) f.listFiles().foreach(recursiveDelete)
     f.delete()
   }
 

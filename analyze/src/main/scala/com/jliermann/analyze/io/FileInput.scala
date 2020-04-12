@@ -13,6 +13,7 @@ import scala.util.Try
 private[analyze] trait FileInput {
   val fileInput: FileInput.Service
 }
+
 private[analyze] object FileInput {
 
   trait Service {

@@ -21,4 +21,5 @@ object FeatureExtractor {
 
     def fourierFundamental(fourier: Fourier): Try[Int]
   }
+
 }

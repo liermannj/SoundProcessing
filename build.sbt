@@ -51,6 +51,8 @@ lazy val sound = runnableProject("sound", "com.jliermann.sound.Boot")
     , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion)
 
 lazy val analyze = runnableProject("analyze", "com.jliermann.analyze.Boot")
+  .dependsOn(testUtils % IntegrationTest)
+  .dependsOn(testUtils % Test)
   .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
     , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion
     , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion

@@ -6,6 +6,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import scala.concurrent.duration.FiniteDuration
 
 object SamplingRateGens extends SamplingRateGens
+
 trait SamplingRateGens extends PropGenUtilsTest {
 
   implicit val arbSamplingRate: Arbitrary[SamplingRate] = Arbitrary {

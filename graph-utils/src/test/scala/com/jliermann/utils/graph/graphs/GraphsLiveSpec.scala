@@ -12,7 +12,7 @@ class GraphsLiveSpec extends StreamTest {
     val input = arbSource[Double](math.pow(10, 3).toInt)
     val result = awaitResult(1.5.second)(input.via(GraphsLive.regularize[Double](0.5.second)))
 
-    result.length should be <=3
+    result.length should be <= 3
   }
 
   "loopLast" should "apply a function of the last two elements over the last" in {
@@ -36,6 +36,6 @@ class GraphsLiveSpec extends StreamTest {
 
     val expected = Seq(Seq("keep on", "continue", "don't stop", stopValue), Seq(stopValue, stopValue, "continue", "my string", stopValue))
     result.zip(expected)
-      .foreach { case (r, e) => r should contain theSameElementsInOrderAs e}
+      .foreach { case (r, e) => r should contain theSameElementsInOrderAs e }
   }
 }

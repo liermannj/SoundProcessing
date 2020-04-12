@@ -1,4 +1,5 @@
 package com.jliermann.sound.input
+
 import java.io.{ByteArrayInputStream, InputStream}
 
 import com.jliermann.sound.environment.AudioInputEnv
@@ -16,8 +17,8 @@ object AudioInputMock extends AudioInputLive {
   }
 }
 
-object AudioInputEnvMock  extends AudioInput with RawAudioSource {
-    override val rawAudioSource: RawAudioSource.Service = RawAudioSourceMock
+object AudioInputEnvMock extends AudioInput with RawAudioSource {
+  override val rawAudioSource: RawAudioSource.Service = RawAudioSourceMock
 
-    override val audioInput: AudioInput.Service = AudioInputMock
+  override val audioInput: AudioInput.Service = AudioInputMock
 }
