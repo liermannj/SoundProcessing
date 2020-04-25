@@ -55,6 +55,7 @@ lazy val analyze = runnableProject("analyze", "com.jliermann.analyze.Boot")
   .dependsOn(testUtils % Test)
   .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
     , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion
+    , libraryDependencies += "org.apache.commons" % "commons-lang3" % ApacheCommonsVersion
     , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion
     , libraryDependencies += "ch.qos.logback" % "logback-classic" % LogbackBackend
     , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion)

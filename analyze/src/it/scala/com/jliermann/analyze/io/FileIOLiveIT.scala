@@ -4,6 +4,7 @@ import java.io.File
 
 import com.jliermann.analyze.RootConfiguration
 import com.jliermann.analyze.environment.EnvironmentLive
+import com.jliermann.analyze.seq.TrySeqOps._
 import com.jliermann.utils.test.{PropTest, ResourcesTest}
 import com.typesafe.config.ConfigFactory
 import org.scalatest.TryValues
@@ -34,7 +35,7 @@ class FileIOLiveIT
 
     val result = FileInputLive.readEnregs(EnvironmentLive, config.localConfiguration.input.copy(file = rawFile))
 
-    result.success.value shouldBe expected
+    result.successes shouldBe expected
   }
 
 }

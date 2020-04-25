@@ -3,7 +3,7 @@ package com.jliermann.analyze.preprocess
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.jliermann.analyze.domain.SignalTypes
-import com.jliermann.analyze.domain.SignalTypes.Signal
+import com.jliermann.analyze.domain.SignalTypes.{Enreg, Signal}
 import com.jliermann.analyze.environment._
 import com.jliermann.analyze.math.{FeatureExtractor, FeatureExtractorLive}
 import com.jliermann.analyze.{FeatureExtractionConfig, RootConfiguration}
@@ -30,18 +30,17 @@ class PreparatorLiveSpec extends PropTest with TryValues {
     }
   }
 
-  "prepareEnreg" should "prepare inner signals then aggregate by mean and std" in forAll { signals: Seq[Signal] =>
+  "prepareEnreg" should "prepare inner signals then aggregate by mean and std" in forAll { signals: Enreg =>
     val fourierCount = new AtomicInteger(0)
     val mfcCount = new AtomicInteger(0)
-    val r = PreparatorLive.prepareEnreg(JobEnvironmentMock(fourierCount, mfcCount), rootConfig.analyzeConfiguration)(signals)
 
-    r match {
-      case Right(result) =>
+    PreparatorLive.prepareEnreg(JobEnvironmentMock(fourierCount, mfcCount), rootConfig.analyzeConfiguration)(signals) match {
+      case Success(result) =>
         fourierCount.get() shouldBe signals.length
         mfcCount.get() shouldBe signals.length
         val numberOfFeature = PreparatorLive.prepareSignal(EnvironmentLive, rootConfig.analyzeConfiguration)(signals.head).success.value.length
         result should have length numberOfFeature * 2
-      case Left(_) => succeed
+      case Failure(_) => succeed
     }
   }
 
