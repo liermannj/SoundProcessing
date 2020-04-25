@@ -12,17 +12,17 @@ class MatrixSpec extends PropTest {
     m
       .transpose
       .transpose
-      .xxs.zip(m.xxs)
+      .lines.zip(m.lines)
       .foreach { case (l, r) => l should contain theSameElementsInOrderAs r }
   }
 
   it should "have a inverted width and height" in forAll { m: Matrix[Int] =>
     val transposed = m.transpose
-    val newHeight = transposed.xxs.length
-    val newWidth = transposed.xxs.headOption.map(_.length).getOrElse(0)
+    val newHeight = transposed.lines.length
+    val newWidth = transposed.lines.headOption.map(_.length).getOrElse(0)
 
-    val height = m.xxs.length
-    val width = m.xxs.headOption.map(_.length).getOrElse(0)
+    val height = m.lines.length
+    val width = m.lines.headOption.map(_.length).getOrElse(0)
 
     newHeight shouldBe width
     newWidth shouldBe height

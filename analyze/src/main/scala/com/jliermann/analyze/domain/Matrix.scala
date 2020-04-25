@@ -2,7 +2,7 @@ package com.jliermann.analyze.domain
 
 import scala.util.{Failure, Success, Try}
 
-case class Matrix[T] private(xxs: Seq[Seq[T]]) {
+case class Matrix[T] private(override val lines: Seq[Seq[T]]) extends BidimSeq[T] {
 
   def transpose: Matrix[T] = {
     @scala.annotation.tailrec
@@ -11,7 +11,7 @@ case class Matrix[T] private(xxs: Seq[Seq[T]]) {
       else transposeRec(input.map(_.tail), acc :+ input.map(_.head))
     }
 
-    new Matrix(transposeRec(xxs))
+    new Matrix(transposeRec(lines))
   }
 }
 
