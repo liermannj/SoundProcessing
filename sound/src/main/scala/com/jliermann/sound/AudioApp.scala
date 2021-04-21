@@ -17,6 +17,7 @@ trait AudioApp {
       targetDataLine.stop()
       targetDataLine.close()
     }
+
     makeManagedResource(start)(stop)(Nil)
   }
 

@@ -12,7 +12,7 @@ class SpokenTagSpec extends PropTest with FrameGens {
   }
 
   it should "label every frame as Pitched when limit is <= 0" in forAll { (frames: Seq[Frame[Double]], limit: Double) =>
-    val trueLimit = - math.abs(limit)
+    val trueLimit = -math.abs(limit)
     val result = frames.map(SpokenTag.label(trueLimit))
     result.foreach {
       case Silent => fail()

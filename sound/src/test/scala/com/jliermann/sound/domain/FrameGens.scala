@@ -4,6 +4,7 @@ import com.jliermann.utils.test.PropGenUtilsTest
 import org.scalacheck.{Arbitrary, Gen}
 
 object FrameGens
+
 trait FrameGens extends PropGenUtilsTest {
 
   implicit def arbFrame: Arbitrary[Frame[Double]] = Arbitrary {

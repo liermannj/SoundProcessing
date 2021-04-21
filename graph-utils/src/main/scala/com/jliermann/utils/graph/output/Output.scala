@@ -20,4 +20,5 @@ object Output {
     def sinkToFile[T](file: File): Sink[T, Future[IOResult]]
 
   }
+
 }
