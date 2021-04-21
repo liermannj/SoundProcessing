@@ -7,7 +7,19 @@ object FrameGens
 trait FrameGens extends PropGenUtilsTest {
 
   implicit def arbFrame: Arbitrary[Frame[Double]] = Arbitrary {
-    Gen.listOf(Gen.choose(-1D, 1D)).map(xs => Frame(xs))
+    for {
+      list <- Arbitrary.arbitrary[Seq[Double]]
+    } yield Frame(list)
+  }
+
+  implicit def arbPitched: Arbitrary[Pitched[Double]] = Arbitrary {
+    for {
+      list <- Arbitrary.arbitrary[Seq[Double]]
+    } yield Pitched(list)
+  }
+
+  implicit def arbSpokenTag: Arbitrary[SpokenTag[Double]] = Arbitrary {
+    Gen.oneOf(Arbitrary.arbitrary[Pitched[Double]], Gen.const(Silent))
   }
 
 }

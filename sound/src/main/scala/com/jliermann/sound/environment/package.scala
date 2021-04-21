@@ -1,7 +1,7 @@
 package com.jliermann.sound
 
 import com.jliermann.sound.input.{AudioInput, RawAudioSource}
-import com.jliermann.sound.process.{AudioWindowing, WordSource}
+import com.jliermann.sound.process.{AudioWindowing, FeatureExtraction, WordSource}
 import com.jliermann.utils.graph.graphs.Graphs
 import com.jliermann.utils.graph.output.Output
 
@@ -12,6 +12,7 @@ package object environment {
     with AudioWindowing
     with Graphs
     with WordSource
+    with FeatureExtraction
     with Output
 
   type WordSourceEnvironment = AudioInput

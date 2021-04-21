@@ -1,13 +1,13 @@
 package com.jliermann.sound
 
 import java.io.File
-
 import com.jliermann.sound.domain.SamplingRate
 import com.typesafe.config.Config
+
 import javax.sound.sampled.AudioFormat
 import pureconfig.generic.ProductHint
 import pureconfig.generic.auto._
-import pureconfig.{CamelCase, ConfigFieldMapping, ConfigReader, ConfigSource}
+import pureconfig.{CamelCase, ConfigFieldMapping, ConfigReader, ConfigSource, Exported}
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -35,6 +35,12 @@ private[sound] object RootConfiguration {
   def loadConfigOrThrow(config: Config): RootConfiguration = {
     ConfigSource.fromConfig(config.getConfig("root")).loadOrThrow[RootConfiguration]
   }
+
+  /**
+   * workaround for unused import pureconfig.auto._
+   */
+  case class Noop()
+  implicit val noop: Exported[ConfigReader[Noop]] = exportReader[Noop]
 }
 
 case class SoundConfiguration(audioFormat: AudioFormat,
@@ -43,4 +49,5 @@ case class SoundConfiguration(audioFormat: AudioFormat,
                               limitPitchedFrame: Double,
                               silentSeparator: Int)
 
-private[sound] case class LocalConfiguration(outputFile: File)
+private[sound] case class LocalConfiguration(outputFile: File,
+                                             fftFeatures: Int)

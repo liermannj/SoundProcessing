@@ -46,6 +46,8 @@ Configuration utilisable pour une utilisation externe du module.
 
 - **silentSeparator** (Int) : Nombre de Frame silencieuses consécutives nécessaires pour terminer un enregistrement et commencer le suivant
 
+- **fftFeatures** (Int) : Nombre de caractéristiques à conserver de la transformée de Fourier
+
 ##### localConfiguration
 Configuration nécessaire à des fins de démo
 
