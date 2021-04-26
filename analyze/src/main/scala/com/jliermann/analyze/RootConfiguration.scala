@@ -12,7 +12,7 @@ import scala.io.Codec
 private[analyze] case class RootConfiguration(analyzeConfiguration: AnalyzeConfiguration,
                                               localConfiguration: LocalConfiguration)
 
-private[analyze] object RootConfiguration {
+object RootConfiguration {
   implicit def productHint[T]: ProductHint[T] = ProductHint[T](ConfigFieldMapping(CamelCase, CamelCase))
 
   implicit val fileReader: ConfigReader[File] = ConfigReader[String].map(new File(_))
