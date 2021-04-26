@@ -14,7 +14,7 @@ import scala.concurrent.duration.FiniteDuration
 private[sound] case class RootConfiguration(soundConfiguration: SoundConfiguration,
                                             localConfiguration: LocalConfiguration)
 
-private[sound] object RootConfiguration {
+object RootConfiguration {
   implicit def productHint[T]: ProductHint[T] = ProductHint[T](ConfigFieldMapping(CamelCase, CamelCase))
 
   implicit val fileReader: ConfigReader[File] = ConfigReader[String].map(new File(_))
