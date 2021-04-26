@@ -24,10 +24,9 @@ private[analyze] object RootConfiguration {
   }
 }
 
-case class AnalyzeConfiguration(fourierFeatureConfig: FeatureExtractionConfig,
-                                mfcFeatureConfig: FeatureExtractionConfig)
-
-case class FeatureExtractionConfig(size: Int, normalize: Option[Boolean])
+case class AnalyzeConfiguration(fourierFeatures: Int,
+                                mfcFeatures: Int,
+                                normalize: Option[Boolean])
 
 private[analyze] case class LocalConfiguration(input: FileReaderConfig,
                                                output: File)
