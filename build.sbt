@@ -59,3 +59,17 @@ lazy val analyze = runnableProject("analyze", "com.jliermann.analyze.Boot")
     , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion
     , libraryDependencies += "ch.qos.logback" % "logback-classic" % LogbackBackend
     , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion)
+
+lazy val example = runnableProject("example", "com.jliermann.example.Boot")
+  .dependsOn(testUtils % IntegrationTest)
+  .dependsOn(testUtils % Test)
+  .dependsOn(graphUtils)
+  .dependsOn(analyze)
+  .dependsOn(sound)
+  .settings(libraryDependencies += "com.github.pureconfig" %% "pureconfig" % PureConfigVersion
+      , libraryDependencies += "com.jsuereth" %% "scala-arm" % ScalaArmVersion
+      , libraryDependencies += "ch.qos.logback" % "logback-classic" % LogbackBackend
+      , libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % LogbackVersion
+      // TODO : manage transitivity
+      , libraryDependencies += "org.apache.commons" % "commons-math3" % ApacheCommonsVersion
+      , libraryDependencies += "org.apache.commons" % "commons-lang3" % ApacheCommonsVersion)
