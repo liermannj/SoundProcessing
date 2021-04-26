@@ -1,6 +1,41 @@
 # Sound Processing
 *toute proposition de nom acceptée :3*
 
+## Analyze
+
+Module destiné à l'analyse d'enregistrement.  
+Extrait les premiers coefficients de fourier + coefficients mfc pour être utilisés comme feature.  
+Le vecteur de caractéristiques contiendra la moyenne et la variance de chaque fréquence sur l'ensemble des Frames de l'enregistrement.
+- Utilisation :
+  - générer un fichier d'enregistrements à l'aide du module **sound**
+  - `sbt analyze/run` va lire le fichier généré, puis convertir chaque enregistrement en features
+  - une ligne de ce fichier correspond aux features d'un enregistrement
+  
+#### Vecteur de caractéristiques
+
+Le vecteur de sortie sera composé comme suit : 
+
+répartition : [-moyennes des FFTC-|-moyenne des MFCC-|-std des FFTC--|-std des MFCC--]  
+taille : [--fourierFeatures--|----mfcFeatures---|fourierFeatures|--mfcFeatures--]  
+taille totale : 2 * (fourierFeatures + mfcFeatures)
+
+#### Paramètres
+
+##### AnalyzeConfiguration 
+
+- **fourierFeatures** (Int): nombre de coefs de fouriers à extraire
+- **mfcFeatures** (Int) : nombre de mfcc à extraire
+- **normalize** (Bool) (optional) : si true, normalise le vecteur de sortie
+
+##### LocalConfiguration
+
+- **input**:
+  - **file** (Path) : chemin du fichier d'entrée à lire 
+  - **codec** (Codec) : encodage du fichier d'entrée 
+  - **sampleSep** (String) : séparateur de frames
+  - **numberSep** (String): séparateur de nombres
+- **output** (Path) : Chemin du fichier de sortie
+
 ## Sound
 
 Module destiné à l'ingestion continue de son.
