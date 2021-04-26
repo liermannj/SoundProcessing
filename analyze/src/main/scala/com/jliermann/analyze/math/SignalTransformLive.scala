@@ -2,12 +2,17 @@ package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
 import com.jliermann.analyze.environment.{AggregateEnv, TransformatorEnv}
+import com.jliermann.analyze.math.SignalTransformLive.{MelDiv, MelMult}
 import org.apache.commons.math3.transform._
 import org.apache.commons.math3.util.{FastMath => fm}
 
 import scala.util.Try
 
-object SignalTransformLive extends SignalTransformLive
+object SignalTransformLive extends SignalTransformLive {
+  // mel factors for natural logarithm https://en.wikipedia.org/wiki/Mel_scale
+  val MelMult = 1127
+  val MelDiv = 700
+}
 
 trait SignalTransformLive extends SignalTransform.Service {
 
@@ -26,6 +31,12 @@ trait SignalTransformLive extends SignalTransform.Service {
       filledSignal <- env.signalTransform.fillSignal(signal)
       transformed <- Try(cosineTransformer.transform((filledSignal :+ 0D).toArray, TransformType.FORWARD))
     } yield Cosine(transformed)
+  }
+
+  override def melScale(env: RawMath, fourierCoefs: FourierCoefs): Try[Seq[Mel]] = Try {
+    fourierCoefs
+      .coefs
+      .map(coef => MelMult * env.rawMath.log(1 + (coef / MelDiv)))
   }
 
   override def fillSignal(signal: Signal): Try[Signal] = Try {

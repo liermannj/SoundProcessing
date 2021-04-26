@@ -7,6 +7,7 @@ object SignalTypes {
   type Enreg = Seq[Signal]
   type Signal = Seq[Double]
   type Hertz = Double
+  type Mel = Double
   type Coef = Double
   type Coefs = Seq[Coef]
 

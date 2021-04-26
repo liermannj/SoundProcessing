@@ -19,6 +19,8 @@ object SignalTransform {
 
     def cosine(env: TransformatorEnv, signal: Signal): Try[Cosine]
 
+    def melScale(env: RawMath, fourierCoefs: FourierCoefs): Try[Seq[Mel]]
+
     def fillSignal(signal: Signal): Try[Signal]
 
     def aggregateWindow(env: AggregateEnv)(seq: Signal): Try[Coef]
