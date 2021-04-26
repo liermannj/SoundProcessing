@@ -26,7 +26,6 @@ private[analyze] trait FileInputLive extends FileInput.Service {
       file: Seq[String] <- env.fileInput.readFromFile(config.file, config.codec)
       sampledLines: Seq[Seq[String]] <- Try(file.map(_.split(config.sampleSep).toSeq))
     } yield BidimSeq(sampledLines)
-      .mapCase(_.filterNot(config.ignoredChars.contains))
       .mapCase(tryToSignal(config.numberSep))
       .lines
       .zipWithIndex

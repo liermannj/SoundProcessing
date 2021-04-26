@@ -14,10 +14,10 @@ private[sound] object Job {
   def run(env: JobEnvironment, config: RootConfiguration, tdl: TargetDataLine)(implicit actorSystem: ActorSystem): Future[IOResult] = {
     env.wordSource.source(env, config.soundConfiguration, tdl)
       .map(_.map {
-        case Pitched(xs) => xs.mkString("[", "; ", "]")
+        case Pitched(xs) => xs.mkString(";")
         case Silent => "SILENT"
       })
-      .map(_.mkString("{", "---", "}"))
+      .map(_.mkString("---"))
       .toMat(env.output.sinkToFile(config.localConfiguration.outputFile))(Keep.right)
       .run
   }

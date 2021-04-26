@@ -19,8 +19,6 @@ private[analyze] object RootConfiguration {
 
   implicit val codecReader: ConfigReader[Codec] = ConfigReader[String].map(Codec(_))
 
-  implicit val charSeqReader: ConfigReader[Seq[Char]] = ConfigReader[Seq[String]].map(_.map(_.head))
-
   def loadConfigOrThrow(config: Config): RootConfiguration = {
     ConfigSource.fromConfig(config.getConfig("root")).loadOrThrow[RootConfiguration]
   }
@@ -37,5 +35,4 @@ private[analyze] case class LocalConfiguration(input: FileReaderConfig,
 private[analyze] case class FileReaderConfig(file: File,
                                              codec: Codec,
                                              sampleSep: String,
-                                             numberSep: String,
-                                             ignoredChars: Seq[Char])
+                                             numberSep: String)
