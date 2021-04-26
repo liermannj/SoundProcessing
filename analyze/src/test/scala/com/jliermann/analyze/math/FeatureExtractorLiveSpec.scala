@@ -1,6 +1,5 @@
 package com.jliermann.analyze.math
 
-import com.jliermann.analyze.FeatureExtractionConfig
 import com.jliermann.analyze.domain.SignalTypeSpec._
 import com.jliermann.analyze.domain.SignalTypes._
 import com.jliermann.analyze.environment.{AggregateEnv, TransformatorEnv}
@@ -13,18 +12,10 @@ class FeatureExtractorLiveSpec extends PropTest with TryValues {
 
   import FeatureExtractorLiveSpec._
 
-  "fourierCoefs" should "extract the fundamental frequency of the Fourier spectrum" in forAll { fourier: Fourier =>
+  "fourierCoefs" should "be consistent over two executions" in forAll { fourier: Fourier =>
 
-    val result = FeatureExtractorLive.fourierCoefs(MockEnv, fourier, defaultConfig).success.value.freq.toInt
-    val expected = FeatureExtractorMock.fourierFundamental(fourier).success.value
-
-    result shouldBe expected
-  }
-
-  it should "be consistent over two executions" in forAll { fourier: Fourier =>
-
-    val result1 = FeatureExtractorLive.fourierCoefs(MockEnv, fourier, defaultConfig)
-    val result2 = FeatureExtractorLive.fourierCoefs(MockEnv, fourier, defaultConfig)
+    val result1 = FeatureExtractorLive.fourierCoefs(MockEnv, fourier, Int.MaxValue)
+    val result2 = FeatureExtractorLive.fourierCoefs(MockEnv, fourier, Int.MaxValue)
 
     result1 match {
       case Failure(e) => e should have message result2.failure.exception.getMessage
@@ -34,8 +25,8 @@ class FeatureExtractorLiveSpec extends PropTest with TryValues {
 
   "mfc" should "be consistent over two executions" in forAll { fourierCoefs: FourierCoefs =>
 
-    val result1 = FeatureExtractorLive.mfc(MockEnv, fourierCoefs, defaultConfig)
-    val result2 = FeatureExtractorLive.mfc(MockEnv, fourierCoefs, defaultConfig)
+    val result1 = FeatureExtractorLive.mfc(MockEnv, fourierCoefs, Int.MaxValue)
+    val result2 = FeatureExtractorLive.mfc(MockEnv, fourierCoefs, Int.MaxValue)
 
     result1 match {
       case Failure(e) => e should have message result2.failure.exception.getMessage
@@ -53,15 +44,13 @@ class FeatureExtractorLiveSpec extends PropTest with TryValues {
       override val featureExtractor: FeatureExtractor.Service = FeatureExtractorMock
       override val rawMath: RawMath.Service = RawMathLive
     }
-    val result = FeatureExtractorLive.mfc(FixedCosineMockEnv, null, defaultConfig)
+    val result = FeatureExtractorLive.mfc(FixedCosineMockEnv, null, Int.MaxValue)
     result.success.value.coefs.drop(2) should contain theSameElementsInOrderAs c.xs.reverse.drop(2).reverse
 
   }
 }
 
 object FeatureExtractorLiveSpec {
-
-  val defaultConfig: FeatureExtractionConfig = FeatureExtractionConfig(Int.MaxValue, None)
 
   trait SignalTransformMock extends SignalTransformLive {
     override def aggregateWindow(env: AggregateEnv)(seq: Signal): Try[Coef] = Success(seq.sum)

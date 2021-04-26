@@ -1,6 +1,5 @@
 package com.jliermann.analyze.math
 
-import com.jliermann.analyze.FeatureExtractionConfig
 import com.jliermann.analyze.domain.SignalTypes.{FourierCoefs, MFC}
 import com.jliermann.analyze.environment.EnvironmentLive
 import org.apache.commons.math3.util.{FastMath => fm}
@@ -27,18 +26,19 @@ class FeatureExtractorLiveIT
     val inputFct = (x: Double) => inputFrequencies.map { case (power, freq) => power * fm.cos(2 * fm.PI * freq * x) }.sum
     val input = (0 to 255).map(_ / 255D).map(inputFct)
 
-    val expected = FourierCoefs(4D, Seq(
+    val expected = FourierCoefs(Seq(
       684.3398473805472, //   4
       43.26023924687131, //   8   ==> empty
       566.0229173979485, //   12
       16.644655791867603, //  16  ==> empty
       44.726421098032745, //  20  ==> empty
       452.3218559986062, //   24
-      157.41359361055635)) // 28
+      157.41359361055635, // 28
+      36.417688003404336)) // 32 ==> empty
 
     val result = for {
       fourier <- SignalTransformLive.fourier(EnvironmentLive, input)
-      r <- FeatureExtractorLive.fourierCoefs(EnvironmentLive, fourier, FeatureExtractionConfig(8, None))
+      r <- FeatureExtractorLive.fourierCoefs(EnvironmentLive, fourier, 8)
     } yield r
 
     result.success.value shouldBe expected
@@ -57,12 +57,12 @@ class FeatureExtractorLiveIT
     val inputFct = (x: Double) => inputFrequencies.map { case (power, freq) => power * fm.cos(2 * fm.PI * freq * x) }.sum
     val input = (0 to 255).map(_ / 255D).map(inputFct)
 
-    val expected = MFC(Seq(-4.1844772012775895, 6.851891693213101, -4.332719536627158, -2.1332879848812247, 3.1118030423620926))
+    val expected = MFC(Seq(-13.298223378637829, 572.1987842702171, -442.35841447409655, -424.8348924042035, 642.1925490279787))
 
     val result = for {
       fourier <- SignalTransformLive.fourier(EnvironmentLive, input)
-      coefs <- FeatureExtractorLive.fourierCoefs(EnvironmentLive, fourier, FeatureExtractionConfig(8, None))
-      r <- FeatureExtractorLive.mfc(EnvironmentLive, coefs, FeatureExtractionConfig(5, None))
+      coefs <- FeatureExtractorLive.fourierCoefs(EnvironmentLive, fourier, 8)
+      r <- FeatureExtractorLive.mfc(EnvironmentLive, coefs, 5)
     } yield r
 
     result.success.value shouldBe expected

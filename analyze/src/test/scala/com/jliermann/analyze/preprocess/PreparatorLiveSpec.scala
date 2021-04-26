@@ -6,7 +6,7 @@ import com.jliermann.analyze.domain.SignalTypes
 import com.jliermann.analyze.domain.SignalTypes.{Enreg, Signal}
 import com.jliermann.analyze.environment._
 import com.jliermann.analyze.math.{FeatureExtractor, FeatureExtractorLive}
-import com.jliermann.analyze.{FeatureExtractionConfig, RootConfiguration}
+import com.jliermann.analyze.RootConfiguration
 import com.jliermann.utils.test.PropTest
 import com.typesafe.config.ConfigFactory
 import org.scalatest.TryValues
@@ -51,14 +51,14 @@ object PreparatorLiveSpec {
 
   object FeatureExtractorMock {
     def apply(fourierCount: AtomicInteger, mfcCount: AtomicInteger): FeatureExtractor.Service = new FeatureExtractorLive {
-      override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: SignalTypes.Fourier, config: FeatureExtractionConfig): Try[SignalTypes.FourierCoefs] = {
+      override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: SignalTypes.Fourier, features: Int): Try[SignalTypes.FourierCoefs] = {
         fourierCount.incrementAndGet()
-        super.fourierCoefs(env, fourier, config)
+        super.fourierCoefs(env, fourier, features)
       }
 
-      override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: SignalTypes.FourierCoefs, config: FeatureExtractionConfig): Try[SignalTypes.MFC] = {
+      override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: SignalTypes.FourierCoefs, features: Int): Try[SignalTypes.MFC] = {
         mfcCount.incrementAndGet()
-        super.mfc(env, fourierCoefs, config)
+        super.mfc(env, fourierCoefs, features)
       }
     }
   }
