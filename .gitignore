@@ -1,4 +1,6 @@
 .idea/
 target/
 null/
-test.txt
+test*.txt
+*ipynb*
+envs/
