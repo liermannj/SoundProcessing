@@ -13,7 +13,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.io.Codec
 
 private[example] case class RootConfiguration(featureConfiguration: FeatureConfiguration,
-                                            localConfiguration: LocalConfiguration)
+                                              localConfiguration: LocalConfiguration)
 
 // TODO: factorize readers
 object RootConfiguration {
@@ -44,5 +44,7 @@ object RootConfiguration {
 case class FeatureConfiguration(soundConfiguration: SoundConfiguration,
                                 analyzeConfiguration: AnalyzeConfiguration)
 
-case class LocalConfiguration(outputFile: File)
+case class LocalConfiguration(outputFile: File, predictor: PredictorConfig)
+
+case class PredictorConfig(script: File, file: File, featureSep: String)
 

@@ -2,6 +2,7 @@ package com.jliermann.example
 
 import com.jliermann.analyze.environment.AnalyzeEnvironment
 import com.jliermann.example.inputs.Input
+import com.jliermann.example.predict.Predictor
 import com.jliermann.sound.environment.SoundEnvironment
 import com.jliermann.utils.graph.output.Output
 
@@ -16,5 +17,6 @@ package object environment {
     with AnalyzeEnvironment
     with Input
     with Output
+    with Predictor
 
 }

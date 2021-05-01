@@ -18,7 +18,8 @@ trait InputLive extends Input.Service {
     Source
       .repeat( () => util.Random.nextInt(Category.elements.size))
       .map(i => Category.elements(i()))
-      .map{category => println(category.label); category}
+      .zipWithIndex
+      .map{case (category, index) => println(index); println(category.label); category}
   }
 
   // TODO : add finer error handling
