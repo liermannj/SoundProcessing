@@ -33,12 +33,11 @@ trait PreparatorLive extends Preparator.Service {
   override def prepareSignal(env: PreparatorEnv, config: AnalyzeConfiguration)(signal: Signal): Try[Coefs] = {
     for {
       fourier <- env.signalTransform.fourier(env, signal)
-      fc@FourierCoefs(fourierCoefs) <- env.featureExtractor.fourierCoefs(env, fourier, config.fourierFeatures)
-      MFC(mfcc) <- env.featureExtractor.mfc(env, fc, config.mfcFeatures)
-      result = fourierCoefs ++ mfcc
+      fc@FourierCoefs(_, fourierCoefs) <- env.featureExtractor.fourierCoefs(env, fourier)
+      MFC(mfcc) <- env.featureExtractor.mfc(env, fc)
     } yield config
       .normalize
       .filter(identity)
-      .fold(result)(_ => env.signalTransform.normalize(result))
+      .fold(fourierCoefs ++ mfcc)(_ => env.signalTransform.normalize(fourierCoefs) ++ env.signalTransform.normalize(mfcc))
   }
 }

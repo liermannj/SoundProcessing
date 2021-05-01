@@ -15,7 +15,7 @@ object SignalTypes {
 
   final case class Cosine(xs: Seq[Double])
 
-  final case class FourierCoefs(coefs: Coefs)
+  final case class FourierCoefs(fundamental: Int, coefs: Coefs)
 
   final case class MFC(coefs: Coefs)
 

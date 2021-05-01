@@ -14,9 +14,9 @@ trait FeatureExtractor {
 object FeatureExtractor {
 
   trait Service {
-    def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier, features: Int): Try[FourierCoefs]
+    def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier): Try[FourierCoefs]
 
-    def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs, features: Int): Try[MFC]
+    def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs): Try[MFC]
 
     def fourierFundamental(fourier: Fourier): Try[Int]
   }

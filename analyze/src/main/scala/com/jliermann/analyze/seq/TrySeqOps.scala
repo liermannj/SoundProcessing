@@ -30,6 +30,7 @@ object TrySeqOps {
 
   object CompoundError {
 
+    //noinspection RegExpUnexpectedAnchor
     private def stackErrors(errors: Seq[Throwable]): String = errors
       .map(err => s"$err$EOL${err.getStackTrace.mkString(s"${PAD}at ", s"$EOL${PAD}at ", "")}")
       .map(_.replaceAll(s"$EOL", s"$EOL$PAD|"))

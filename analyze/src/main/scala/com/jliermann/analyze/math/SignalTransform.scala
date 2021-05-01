@@ -1,7 +1,7 @@
 package com.jliermann.analyze.math
 
 import com.jliermann.analyze.domain.SignalTypes._
-import com.jliermann.analyze.environment.{AggregateEnv, TransformatorEnv}
+import com.jliermann.analyze.environment.AggregateEnv
 
 import scala.util.Try
 
@@ -15,15 +15,17 @@ object SignalTransform {
 
   trait Service {
 
-    def fourier(env: TransformatorEnv, signal: Signal): Try[Fourier]
+    def fourier(env: SignalTransform, signal: Signal): Try[Fourier]
 
-    def cosine(env: TransformatorEnv, signal: Signal): Try[Cosine]
+    def cosine(env: SignalTransform, signal: Signal): Try[Cosine]
 
     def melScale(env: RawMath, fourierCoefs: FourierCoefs): Try[Seq[Mel]]
 
     def fillSignal(signal: Signal): Try[Signal]
 
-    def aggregateWindow(env: AggregateEnv)(seq: Signal): Try[Coef]
+    def aggregateWindow(env: RawMath)(seq: Signal): Try[Coef]
+
+    def dicreteAggregate(env: AggregateEnv, step: Int)(seq: Signal): Try[Coefs]
 
     def normalize(seq: Signal): Signal
 

@@ -51,14 +51,14 @@ object PreparatorLiveSpec {
 
   object FeatureExtractorMock {
     def apply(fourierCount: AtomicInteger, mfcCount: AtomicInteger): FeatureExtractor.Service = new FeatureExtractorLive {
-      override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: SignalTypes.Fourier, features: Int): Try[SignalTypes.FourierCoefs] = {
+      override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: SignalTypes.Fourier): Try[SignalTypes.FourierCoefs] = {
         fourierCount.incrementAndGet()
-        super.fourierCoefs(env, fourier, features)
+        super.fourierCoefs(env, fourier)
       }
 
-      override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: SignalTypes.FourierCoefs, features: Int): Try[SignalTypes.MFC] = {
+      override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: SignalTypes.FourierCoefs): Try[SignalTypes.MFC] = {
         mfcCount.incrementAndGet()
-        super.mfc(env, fourierCoefs, features)
+        super.mfc(env, fourierCoefs)
       }
     }
   }

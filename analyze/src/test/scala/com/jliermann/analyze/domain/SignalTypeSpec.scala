@@ -17,7 +17,10 @@ object SignalTypeSpec {
   implicit val arbCosine: Arbitrary[Cosine] = Arbitrary(Arbitrary.arbitrary[Seq[Double]].suchThat(_.length > 2).map(Cosine))
 
   implicit val arbFourierCoefs: Arbitrary[FourierCoefs] = Arbitrary {
-    Arbitrary.arbitrary[Seq[Double]].map(FourierCoefs)
+    for {
+      coefs <- Gen.nonEmptyListOf(Arbitrary.arbitrary[Double])
+      fundamental <- Gen.choose(0, coefs.length-1)
+    } yield FourierCoefs(fundamental, coefs)
   }
 
 }

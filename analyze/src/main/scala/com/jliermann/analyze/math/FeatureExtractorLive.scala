@@ -5,37 +5,29 @@ import com.jliermann.analyze.environment._
 import com.jliermann.analyze.seq.SeqOps._
 import org.apache.commons.math3.util.{FastMath => fm}
 
-import scala.util.Try
+import scala.util.{Success, Try}
+import com.jliermann.analyze.seq.TrySeqOps._
 
-object FeatureExtractorLive extends FeatureExtractorLive {
-  // as the article said, but can't find the article anymore, so source : dude trust me
-  // ignore first mfc coefs as they are not relevant
-  val IgnoredMFCCoefs = 2
-}
+object FeatureExtractorLive extends FeatureExtractorLive
 
 trait FeatureExtractorLive extends FeatureExtractor.Service {
 
   import FeatureExtractorLive._
 
-  override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier, features: Int): Try[FourierCoefs] = {
+  override def fourierCoefs(env: FourierFeatureExtractorEnv, fourier: Fourier): Try[FourierCoefs] = {
     val absFourier = fourier.xs.map(_.abs)
     for {
       fundamental <- env.featureExtractor.fourierFundamental(fourier)
-      coefs <- Try((fundamental to (features * fundamental) by fundamental) // harmonics are multiple of fundamental
-        .map(middle => absFourier.safeCenteredSlice(middle, fundamental)) // overlapping window around harmonics, to not miss it in case of approximation
-        .map(env.signalTransform.aggregateWindow(env))
-        .map(_.getOrElse(0D)))
-
-    } yield FourierCoefs(coefs)
+      coefs <- env.signalTransform.dicreteAggregate(env, fundamental)(absFourier)
+    } yield FourierCoefs(fundamental, coefs)
   }
 
-  override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs, features: Int): Try[MFC] = {
+  override def mfc(env: MFCFeatureExtractorEnv, fourierCoefs: FourierCoefs): Try[MFC] = {
     for {
       melCoefs <- env.signalTransform.melScale(env, fourierCoefs)
       positiveLogCoefs = env.signalTransform.positiveShift(melCoefs)
       Cosine(xs) <- env.signalTransform.cosine(env, positiveLogCoefs)
-      coefs = xs.slice(IgnoredMFCCoefs, features + IgnoredMFCCoefs)
-
+      coefs <- env.signalTransform.dicreteAggregate(env, fourierCoefs.fundamental)(xs)
     } yield MFC(coefs)
   }
 

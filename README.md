@@ -15,16 +15,13 @@ Le vecteur de caractéristiques contiendra la moyenne et la variance de chaque f
 
 Le vecteur de sortie sera composé comme suit : 
 
-répartition : [-moyennes des FFTC-|-moyenne des MFCC-|-std des FFTC--|-std des MFCC--]  
-taille : [--fourierFeatures--|----mfcFeatures---|fourierFeatures|--mfcFeatures--]  
-taille totale : 2 * (fourierFeatures + mfcFeatures)
+répartition : [-moyennes des FFTC-|-moyenne des MFCC-|-std des FFTC-|-std des MFCC-]  
+taille totale : 1024
 
 #### Paramètres
 
 ##### AnalyzeConfiguration 
 
-- **fourierFeatures** (Int): nombre de coefs de fouriers à extraire
-- **mfcFeatures** (Int) : nombre de mfcc à extraire
 - **normalize** (Bool) (optional) : si true, normalise le vecteur de sortie
 
 ##### LocalConfiguration
