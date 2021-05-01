@@ -3,7 +3,7 @@ package com.jliermann.analyze.preprocess
 import com.jliermann.analyze.AnalyzeConfiguration
 import com.jliermann.analyze.domain.Matrix
 import com.jliermann.analyze.domain.SignalTypes._
-import com.jliermann.analyze.environment.{EnregPreparatorEnvironment, PreparatorEnv}
+import com.jliermann.analyze.environment.{EnregPreparatorEnv, PreparatorEnv}
 import com.jliermann.analyze.seq.NumericSeqOps._
 import com.jliermann.analyze.seq.TrySeqOps._
 
@@ -19,7 +19,7 @@ trait PreparatorLive extends Preparator.Service {
 
   import PreparatorLive._
 
-  override def prepareEnreg(env: EnregPreparatorEnvironment, config: AnalyzeConfiguration)(enreg: Enreg): Try[Coefs] = {
+  override def prepareEnreg(env: EnregPreparatorEnv, config: AnalyzeConfiguration)(enreg: Enreg): Try[Coefs] = {
     for {
       unitProcessed: Seq[Coefs] <- enreg
         .map(env.preparator.prepareSignal(env, config))
