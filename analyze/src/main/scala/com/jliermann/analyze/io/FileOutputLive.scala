@@ -1,21 +1,23 @@
 package com.jliermann.analyze.io
 
 import java.io.{BufferedOutputStream, File, FileOutputStream, OutputStream}
-
-import com.jliermann.analyze.EOL
+import com.jliermann.analyze.{EOL, FileConfig}
+import com.jliermann.analyze.domain.SignalTypes.Coefs
 
 import scala.util.Try
 
 private[analyze] object FileOutputLive extends FileOutputLive
-
 private[analyze] trait FileOutputLive extends FileOutput.Service {
 
-  override def writeToFile(file: File, data: Seq[String]): Try[Unit] = provideWriter(file) {
+  override def writeToFile(fileConfig: FileConfig, data: Seq[Seq[Coefs]]): Try[Unit] = provideWriter(fileConfig.file) {
     writer =>
       Try {
-        if (!file.exists()) file.createNewFile()
+        if (!fileConfig.file.exists()) fileConfig.file.createNewFile()
         data
-          .map(s => s"$s$EOL".getBytes)
+          .map((enreg: Seq[Coefs]) => enreg
+            .map((frame: Coefs) => frame.mkString(fileConfig.numberSep))
+            .mkString(fileConfig.sampleSep))
+          .map((s: String) => s"$s$EOL".getBytes(fileConfig.codec.charSet))
           .foreach(writer.write)
 
         writer.flush()

@@ -13,7 +13,7 @@ object Boot extends App with LazyLogging {
 
   Job.run(EnvironmentLive, config) match {
     case Success(_) =>
-      logger.info(s"Successfully converted enregs from file ${input.file} to footPrints $output")
+      logger.info(s"Successfully converted enregs from file ${input.file} to footPrints ${output.file}")
     case Failure(e) =>
       logger.error(e.toString, e.fillInStackTrace())
       throw new Exception("Some enregs were not successfully parsed")

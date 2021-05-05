@@ -15,7 +15,7 @@ trait Preparator {
 object Preparator {
 
   trait Service {
-    def prepareEnreg(env: EnregPreparatorEnv, config: AnalyzeConfiguration)(enregs: Enreg): Try[Coefs]
+    def prepareEnreg(env: EnregPreparatorEnv, config: AnalyzeConfiguration)(enregs: Enreg): Try[Seq[Coefs]]
 
     def prepareSignal(env: PreparatorEnv, config: AnalyzeConfiguration)(signal: Signal): Try[Coefs]
 

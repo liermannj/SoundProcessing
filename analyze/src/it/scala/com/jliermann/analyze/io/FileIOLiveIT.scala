@@ -1,8 +1,8 @@
 package com.jliermann.analyze.io
 
 import java.io.File
-
 import com.jliermann.analyze.RootConfiguration
+import com.jliermann.analyze.domain.SignalTypes.Coefs
 import com.jliermann.analyze.environment.EnvironmentLive
 import com.jliermann.analyze.seq.TrySeqOps._
 import com.jliermann.utils.test.{PropTest, ResourcesTest}
@@ -18,11 +18,16 @@ class FileIOLiveIT
   val config: RootConfiguration = RootConfiguration.loadConfigOrThrow(ConfigFactory.load())
   val rawFile = new File(getClass.getClassLoader.getResource(new File("testRawInput.txt").toString).getPath)
 
-  "writeToFile and readFromFile" should "write seq of strings to a given file, then reread them" in forAll { content: Seq[String] =>
+  "writeToFile and readFromFile" should "write seq of strings to a given file, then reread them" in forAll { content: Seq[Seq[Coefs]] =>
     withTmpFolder { folder =>
       val file = new File(folder, "file.txt")
-      FileOutputLive.writeToFile(file, content)
-      FileInputLive.readFromFile(file, Codec.UTF8).success.value should contain theSameElementsInOrderAs content
+      val fileConfig = config.localConfiguration.input.copy(file = file)
+      val expected = content
+        .map(_
+          .map(_.mkString(fileConfig.numberSep))
+          .mkString(fileConfig.sampleSep))
+      FileOutputLive.writeToFile(fileConfig, content)
+      FileInputLive.readFromFile(file, Codec.UTF8).success.value should contain theSameElementsInOrderAs expected
     }
 
   }

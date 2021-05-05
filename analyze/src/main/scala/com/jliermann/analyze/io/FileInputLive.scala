@@ -2,7 +2,7 @@ package com.jliermann.analyze.io
 
 import java.io.File
 
-import com.jliermann.analyze.FileReaderConfig
+import com.jliermann.analyze.FileConfig
 import com.jliermann.analyze.domain.BidimSeq
 import com.jliermann.analyze.domain.SignalTypes.{Enreg, Signal}
 import com.jliermann.analyze.environment.FileInputEnv
@@ -21,7 +21,7 @@ private[analyze] object FileInputLive extends FileInputLive {
 
 private[analyze] trait FileInputLive extends FileInput.Service {
 
-  def readEnregs(env: FileInputEnv, config: FileReaderConfig): Seq[Try[Enreg]] = {
+  def readEnregs(env: FileInputEnv, config: FileConfig): Seq[Try[Enreg]] = {
     val tryOut = for {
       file: Seq[String] <- env.fileInput.readFromFile(config.file, config.codec)
       sampledLines: Seq[Seq[String]] <- Try(file.map(_.split(config.sampleSep).toSeq))

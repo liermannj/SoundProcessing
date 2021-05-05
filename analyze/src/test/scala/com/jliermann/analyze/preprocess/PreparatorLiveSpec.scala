@@ -39,7 +39,7 @@ class PreparatorLiveSpec extends PropTest with TryValues {
         fourierCount.get() shouldBe signals.length
         mfcCount.get() shouldBe signals.length
         val numberOfFeature = PreparatorLive.prepareSignal(EnvironmentLive, rootConfig.analyzeConfiguration)(signals.head).success.value.length
-        result should have length numberOfFeature * 2
+        result.head should have length numberOfFeature * 2
       case Failure(_) => succeed
     }
   }
@@ -47,7 +47,7 @@ class PreparatorLiveSpec extends PropTest with TryValues {
 }
 
 object PreparatorLiveSpec {
-  val rootConfig: RootConfiguration = RootConfiguration.loadConfigOrThrow(ConfigFactory.load())
+  val rootConfig: RootConfiguration = RootConfiguration.loadConfigOrThrow(ConfigFactory.load("referenceSpec.conf").resolve())
 
   object FeatureExtractorMock {
     def apply(fourierCount: AtomicInteger, mfcCount: AtomicInteger): FeatureExtractor.Service = new FeatureExtractorLive {

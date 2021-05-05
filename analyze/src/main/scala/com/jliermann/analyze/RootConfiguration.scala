@@ -24,12 +24,13 @@ private[analyze] object RootConfiguration {
   }
 }
 
-case class AnalyzeConfiguration(normalize: Option[Boolean])
+case class AnalyzeConfiguration(normalize: Option[Boolean],
+                                aggregate: Option[Boolean])
 
-private[analyze] case class LocalConfiguration(input: FileReaderConfig,
-                                               output: File)
+private[analyze] case class LocalConfiguration(input: FileConfig,
+                                               output: FileConfig)
 
-private[analyze] case class FileReaderConfig(file: File,
-                                             codec: Codec,
-                                             sampleSep: String,
-                                             numberSep: String)
+private[analyze] case class FileConfig(file: File,
+                                       codec: Codec,
+                                       sampleSep: String,
+                                       numberSep: String)

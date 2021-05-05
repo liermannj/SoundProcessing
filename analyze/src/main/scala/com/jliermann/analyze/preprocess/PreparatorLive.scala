@@ -19,15 +19,22 @@ trait PreparatorLive extends Preparator.Service {
 
   import PreparatorLive._
 
-  override def prepareEnreg(env: EnregPreparatorEnv, config: AnalyzeConfiguration)(enreg: Enreg): Try[Coefs] = {
-    for {
-      unitProcessed: Seq[Coefs] <- enreg
-        .map(env.preparator.prepareSignal(env, config))
-        .squash(ImproperEnregException(enreg))
-      if unitProcessed.nonEmpty
-      matrix <- Matrix(unitProcessed)
-      coefs <- Try(matrix.transpose.lines.flatMap(xs => xs.mean :: xs.stdDev :: Nil))
-    } yield coefs
+  override def prepareEnreg(env: EnregPreparatorEnv, config: AnalyzeConfiguration)(enreg: Enreg): Try[Seq[Coefs]] = {
+    val unitProcessedT: Try[Seq[Coefs]] = enreg
+      .map(env.preparator.prepareSignal(env, config))
+      .squash(ImproperEnregException(enreg))
+      .filter(_.nonEmpty)
+
+    config
+      .aggregate
+      .filter(identity)
+      .fold(unitProcessedT) { _ =>
+        for {
+          unitProcessed: Seq[Coefs] <- unitProcessedT
+          matrix <- Matrix(unitProcessed)
+          coefs <- Try(matrix.transpose.lines.flatMap(xs => xs.mean :: xs.stdDev :: Nil))
+        } yield coefs :: Nil
+      }
   }
 
   override def prepareSignal(env: PreparatorEnv, config: AnalyzeConfiguration)(signal: Signal): Try[Coefs] = {

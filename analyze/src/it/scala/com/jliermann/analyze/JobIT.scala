@@ -19,11 +19,11 @@ class JobIT
   "run" should "compute features for multiple enreg in a file" in withTmpFolder { tmpFolder =>
     val adaptedConfig = config.copy(
       localConfiguration = config.localConfiguration.copy(
-        output = new File(tmpFolder, config.localConfiguration.output.getPath)))
+        output = config.localConfiguration.output.copy(file = new File(tmpFolder, config.localConfiguration.output.file.getPath))))
 
     Job.run(EnvironmentLive, adaptedConfig) should be a 'success
 
-    val result = readFile(adaptedConfig.localConfiguration.output)
+    val result = readFile(adaptedConfig.localConfiguration.output.file)
     val expected = readResource(new File("expected.txt"))
     result should contain theSameElementsInOrderAs expected
   }

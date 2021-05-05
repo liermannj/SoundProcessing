@@ -15,23 +15,38 @@ Le vecteur de caractéristiques contiendra la moyenne et la variance de chaque f
 
 Le vecteur de sortie sera composé comme suit : 
 
+Si aggregate = true :  
+
 répartition : [-moyennes des FFTC-|-moyenne des MFCC-|-std des FFTC-|-std des MFCC-]  
 taille totale : 1024
+
+Si aggregate = false :  
+
+répartition : [[-FFTC1-|-MFCC1-],[-FFTC2-|-MFCC2-],...,[-FFTCN-|-MFCCN-]]  
+taille totale : 512*nombre de frame dans un enreg (variable)
+
+Cette configuration enregistre le preprocessing sous forme de série temporelle, séquence de taille variable
+d'enregistrements de longueur unitaire 512. Chaque frame d'un enregistrement à une correspondance avec chaque frame en entrée (sauf silence)
 
 #### Paramètres
 
 ##### AnalyzeConfiguration 
 
 - **normalize** (Bool) (optional) : si true, normalise le vecteur de sortie
+- **aggregate** (Bool) (optional) : si false, enregistre la sortie sous forme de série temporelle, sinon, aggrège par moyenne et variance
 
 ##### LocalConfiguration
 
-- **input**:
-  - **file** (Path) : chemin du fichier d'entrée à lire 
-  - **codec** (Codec) : encodage du fichier d'entrée 
+Formats : 
+- FileConfig:
+  - **file** (Path) : chemin du fichier d'entrée à lire
+  - **codec** (Codec) : encodage du fichier d'entrée
   - **sampleSep** (String) : séparateur de frames
   - **numberSep** (String): séparateur de nombres
-- **output** (Path) : Chemin du fichier de sortie
+  
+Paramètres :
+- **input** (FileConfig) : paramètres de lecture de fichier 
+- **output** (FileConfig) : paramètres de d'enregistrement de fichier (sampleSep est ignoré si aggregate = True)
 
 ## Sound
 
